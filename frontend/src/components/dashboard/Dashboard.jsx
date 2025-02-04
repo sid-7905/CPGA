@@ -333,7 +333,7 @@ export default function Dashboard() {
         </div>
 
         {/* Rating Graph and Stats */}
-        <div className="w-11/12 rounded-lg flex flex-wrap items-center justify-center gap-4">
+        <div className="w-11/12 rounded-lg flex flex-wrap items-center justify-center gap-20 md:gap-4 mt-20 md:mt-4">
           <div
             className="h-48 sm:h-72 md:h-80 border border-gray-700/50 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex items-center justify-center shadow-lg"
             style={{ aspectRatio: "2" }}
