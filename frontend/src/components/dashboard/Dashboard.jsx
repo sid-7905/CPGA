@@ -236,15 +236,15 @@ export default function Dashboard() {
 
   const ratingData = {
     CodeChef: {
-      current: CCData ? CCData.currentRating.toFixed(0) : 0,
-      highest: CCData ? CCData.highestRating.toFixed(0) : 0,
+      current: CCData ? CCData.currentRating?.toFixed(0) : 0,
+      highest: CCData ? CCData.highestRating?.toFixed(0) : 0,
     },
     CodeForces: {
-      current: CFUserInfo ? CFUserInfo.result?.[0]?.rating.toFixed(0) : 0,
-      highest: CFUserInfo ? CFUserInfo.result?.[0]?.maxRating.toFixed(0) : 0,
+      current: CFUserInfo ? CFUserInfo.result?.[0]?.rating?.toFixed(0) : 0,
+      highest: CFUserInfo ? CFUserInfo.result?.[0]?.maxRating?.toFixed(0) : 0,
     },
     LeetCode: {
-      current: LCContestData?.userContestRanking?.rating.toFixed(0) || 0,
+      current: LCContestData?.userContestRanking?.rating?.toFixed(0) || 0,
       highest: LCContestData?.userContestRankingHistory
         ?.filter((contest) => contest.attended)
         ?.reduce((acc, contest) => Math.max(acc, contest.rating), 0)
