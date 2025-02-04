@@ -1,0 +1,18 @@
+/* From Uiverse.io by ke1221 */ 
+.custom-btn {
+    color: #090909;
+    padding: 0.5em;
+    font-size: 18px;
+    border-radius: 0.5em;
+    background: #b2b2b2;
+    cursor: pointer;
+    border: 1px solid #e8e8e8;
+    transition: all 0.3s;
+    box-shadow: 1px 1px 1px #c5c5c5, -1px -1px 1px #ffffff;
+  }
+  
+  .custom-btn:active {
+    color: #666;
+    box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+  }
+  
