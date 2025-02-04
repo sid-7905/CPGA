@@ -47,8 +47,16 @@ const ccProblemCount = async (req, res) => {
 
   try {
     // Launch Puppeteer
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--disable-dev-shm-usage",
+      ],
+    });
+        const page = await browser.newPage();
 
     // Navigate to CodeChef user page
     await page.goto(url, { waitUntil: "domcontentloaded" });
