@@ -53,13 +53,13 @@ export default function Dashboard() {
     setError,
     specialRefresh
   );
-  const fetchCCSolved = useFetchWithLocalStorage(
-    "CCSolved",
-    fetchCodeChefData,
-    setCCProblemsSolved,
-    setError,
-    specialRefresh
-  );
+  // const fetchCCSolved = useFetchWithLocalStorage(
+  //   "CCSolved",
+  //   fetchCodeChefData,
+  //   setCCProblemsSolved,
+  //   setError,
+  //   specialRefresh
+  // );
   const fetchCFData = useFetchWithLocalStorage(
     "CFData",
     fetchData,
@@ -127,7 +127,10 @@ export default function Dashboard() {
   function handleRefresh(platform) {
     let fetchFunctions = [];
     if (platform === "CodeChef") {
-      fetchFunctions = [fetchCCData(true), fetchCCSolved(true)];
+      fetchFunctions = [
+        fetchCCData(true),
+        //  fetchCCSolved(true)
+        ];
     } else if (platform === "CodeForces") {
       fetchFunctions = [
         fetchCFData(true),
@@ -171,7 +174,7 @@ export default function Dashboard() {
     LCData &&
     CFUserInfo &&
     LCContestData &&
-    CCProblemsSolved &&
+    // CCProblemsSolved &&
     userHandle;
   const [timeoutReached, setTimeoutReached] = useState(false);
 
