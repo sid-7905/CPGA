@@ -46,20 +46,39 @@ const ccProblemCount = async (req, res) => {
   const url = `https://www.codechef.com/users/${userHandle}`;
 
   try {
-    // Launch Puppeteer
+    // Launch Puppeteer with specific configurations for Render
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: "new",  // Use new headless mode
+      executablePath: process.env.NODE_ENV === 'production' 
+        ? '/usr/bin/chromium-browser'  // Use system Chromium in production
+        : puppeteer.executablePath(),  // Use bundled Chromium in development
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-gpu",
         "--disable-dev-shm-usage",
+        "--single-process",
+        "--no-zygote",
+        "--disable-extensions",
+        "--disable-accelerated-2d-canvas",
+        "--disable-gl-drawing-for-tests",
+        "--no-first-run",
+        "--no-default-browser-check",
+        "--disable-software-rasterizer",
       ],
     });
-        const page = await browser.newPage();
+
+    const page = await browser.newPage();
+    
+    // Set a reasonable timeout
+    await page.setDefaultNavigationTimeout(30000);
+    await page.setDefaultTimeout(30000);
 
     // Navigate to CodeChef user page
-    await page.goto(url, { waitUntil: "domcontentloaded" });
+    await page.goto(url, { 
+      waitUntil: "networkidle0",  // Changed to ensure page is fully loaded
+      timeout: 30000 
+    });
 
     // Extract the "Total Problems Solved" text
     const totalProblemsSolved = await page.evaluate(() => {
@@ -67,27 +86,30 @@ const ccProblemCount = async (req, res) => {
         h3.textContent.includes("Total Problems Solved")
       );
       if (h3Tag) {
-        // Use a regular expression to extract the integer value
         const match = h3Tag.textContent.match(/\d+/);
         return match ? parseInt(match[0], 10) : null;
       }
-
       return null;
     });
 
     // Close the browser
     await browser.close();
 
-    if (totalProblemsSolved) {
+    if (totalProblemsSolved !== null) {
       res.json({ totalProblemsSolved });
     } else {
       res.status(404).json({ error: "User or data not found" });
     }
   } catch (error) {
-    console.error(`Failed to fetch the page: ${error.message}`);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Puppeteer error:", error);
+    res.status(500).json({ 
+      error: "Internal server error",
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
+
+module.exports = { ccProblemCount };
 
 const addDailyProblemPreferences = async (req, res) => {
   const userId = req.user.userID;
