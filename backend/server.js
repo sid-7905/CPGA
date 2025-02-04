@@ -9,8 +9,12 @@ const port = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'https://cpga-siddhesh-pandeys-projects.vercel.app', 'https://cpga.vercel.app'],
-    methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
+    origin: [
+      "http://localhost:3000",
+      "https://cpga-siddhesh-pandeys-projects.vercel.app",
+      "https://cpga.vercel.app",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
 );
@@ -23,7 +27,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
 app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,7 +38,6 @@ connectDB();
 app.get("/", (req, res) => {
   res.send("Server is running!!");
 });
-
 
 const userRouter = require("./routes/userRoute");
 app.use("/api/user", userRouter);
