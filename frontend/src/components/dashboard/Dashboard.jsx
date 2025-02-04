@@ -97,7 +97,7 @@ export default function Dashboard() {
   );
 
   if (error) {
-    showErrorToast(error); // Show error toast
+    console.log(error);
   }
 
   const platforms = [
@@ -154,7 +154,7 @@ export default function Dashboard() {
         }
       })
       .catch((error) => {
-        toast.error("Failed to refresh data");
+       showErrorToast("Failed to refresh data");
       });
   }
 
