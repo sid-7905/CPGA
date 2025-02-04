@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", process.env.FRONTEND_URL],
     credentials: true,
   })
 );
@@ -38,5 +38,5 @@ const otherRouter = require("./routes/otherRoute");
 app.use("/api", otherRouter);
 
 app.listen(port, () => {
-  console.log(`Server is running on port: ${port}`);
+  console.log(`Server is running`);
 });
