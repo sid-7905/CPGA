@@ -5,12 +5,12 @@ const bodyParser = require("body-parser");
 const path = require("path");
 require("dotenv").config();
 const connectDB = require("./config/mongoDB.js");
-const auth = require("./middleware/auth");
 const port = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", process.env.FRONTEND_URL],
+    origin: ['http://localhost:3000', 'https://cpga-siddhesh-pandeys-projects.vercel.app', 'https://cpga.vercel.app'],
+    methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
     credentials: true,
   })
 );
