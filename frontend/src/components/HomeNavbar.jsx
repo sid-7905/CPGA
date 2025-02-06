@@ -20,7 +20,6 @@ const navigation = [
   { name: "Daily Leaderboard", to: "/leaderboard" },
   { name: "Daily Problems", to: "/dailyProblems" },
   {name: "Main Leaderboard", to: "/mainLeaderBoard"},
-  { name: "Contest", to: "/contest" },
 ];
 
 function classNames(...classes) {

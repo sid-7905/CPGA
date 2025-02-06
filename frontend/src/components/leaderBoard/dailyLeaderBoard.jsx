@@ -3,80 +3,99 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { NavLink } from "react-router-dom";
 import HomeNavbar from "../HomeNavbar";
-import { Trophy, Medal, Award, Search, ChevronLeft, ChevronRight, User } from 'lucide-react';
+import {
+  Trophy,
+  Medal,
+  Award,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  User,
+} from "lucide-react";
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const LeaderboardRow = ({ user, index, backendUrl }) => {
-    const getMedalIcon = (position) => {
-      switch (position) {
-        case 0:
-          return <Trophy className="w-6 h-6 text-yellow-400" />;
-        case 1:
-          return <Medal className="w-6 h-6 text-gray-300" />;
-        case 2:
-          return <Award className="w-6 h-6 text-amber-600" />;
-        default:
-          return <span className="text-xl font-bold text-gray-400">{position + 1}</span>;
-      }
-    };
-  
-    return (
-      <div className={`group flex flex-wrap sm:flex-nowrap items-center w-full lg:w-2/3 rounded-xl p-4 
-        ${index < 3 
-          ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border border-gray-700'
-          : 'bg-gray-900/60 hover:bg-gray-800/80'} 
+  const getMedalIcon = (position) => {
+    switch (position) {
+      case 0:
+        return <Trophy className="w-6 h-6 text-yellow-400" />;
+      case 1:
+        return <Medal className="w-6 h-6 text-gray-300" />;
+      case 2:
+        return <Award className="w-6 h-6 text-amber-600" />;
+      default:
+        return (
+          <span className="text-xl font-bold text-gray-400">
+            {position + 1}
+          </span>
+        );
+    }
+  };
+
+  return (
+    <div
+      className={`group flex flex-wrap sm:flex-nowrap items-center w-full lg:w-2/3 rounded-xl p-4 
+        ${
+          index < 3
+            ? "bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border border-gray-700"
+            : "bg-gray-900/60 hover:bg-gray-800/80"
+        } 
         transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/10`}
-      >
-        <div className="flex items-center gap-6 w-full sm:w-1/3 px-4">
-          <div className="flex items-center justify-center w-8">
-            {getMedalIcon(index)}
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <div className="w-10 h-10 rounded-full overflow-hidden shadow-lg">
-                    {user?.image ? (
-                        <img
-                            src={`${backendUrl}/images/uploads/${user.image}`}
-                            alt="Profile"
-                            className="h-full w-full rounded-full object-cover"
-                        />
-                    ) : (
-                        <User className="h-full w-full p-1 text-gray-400 object-cover" />
-                    )}
-                </div>
-              {index < 3 && (
-                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gray-800 border-2 border-gray-700 flex items-center justify-center">
-                  {index === 0 && '👑'}
-                  {index === 1 && '🥈'}
-                  {index === 2 && '🥉'}
-                </div>
+    >
+      <div className="flex items-center gap-6 w-full sm:w-1/3 px-4">
+        <div className="flex items-center justify-center w-8">
+          {getMedalIcon(index)}
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <div className="w-10 h-10 rounded-full overflow-hidden shadow-lg">
+              {user?.image ? (
+                <img
+                  src={`${backendUrl}/images/uploads/${user.image}`}
+                  alt="Profile"
+                  className="h-full w-full rounded-full object-cover"
+                />
+              ) : (
+                <User className="h-full w-full p-1 text-gray-400 object-cover" />
               )}
             </div>
-            <div>
-              <h3 className="font-semibold text-white group-hover:text-cyan-400 transition-colors">
-                {user.name}
-              </h3>
-            </div>
+            {index < 3 && (
+              <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gray-800 border-2 border-gray-700 flex items-center justify-center">
+                {index === 0 && "👑"}
+                {index === 1 && "🥈"}
+                {index === 2 && "🥉"}
+              </div>
+            )}
           </div>
-        </div>
-  
-        <div className="flex items-center justify-center w-full sm:w-1/3 py-4 sm:py-0">
-          <div className="px-4 py-2 bg-gray-800/50 rounded-lg">
-            <span className="text-lg font-bold text-cyan-400">{user.dailyPoints}</span>
-            <span className="text-gray-400 ml-2">points</span>
+          <div>
+            <h3 className="font-semibold text-white group-hover:text-cyan-400 transition-colors">
+              {user.name}
+            </h3>
           </div>
-        </div>
-  
-        <div className="w-full sm:w-1/3 flex justify-center">
-          <NavLink to={`/profile/${user._id}`} className="w-full sm:w-auto">
-            <button className="w-full px-6 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg
-                             transition-colors duration-300 flex items-center justify-center gap-2">
-              View Profile
-            </button>
-          </NavLink>
         </div>
       </div>
-    );
+
+      <div className="flex items-center justify-center w-full sm:w-1/3 py-4 sm:py-0">
+        <div className="px-4 py-2 bg-gray-800/50 rounded-lg">
+          <span className="text-lg font-bold text-cyan-400">
+            {user.dailyPoints}
+          </span>
+          <span className="text-gray-400 ml-2">points</span>
+        </div>
+      </div>
+
+      <div className="w-full sm:w-1/3 flex justify-center">
+        <NavLink to={`/profile/${user._id}`} className="w-full sm:w-auto">
+          <button
+            className="w-full px-6 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg
+                             transition-colors duration-300 flex items-center justify-center gap-2"
+          >
+            View Profile
+          </button>
+        </NavLink>
+      </div>
+    </div>
+  );
 };
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -89,11 +108,11 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
-      
+
       <span className="text-gray-400">
         Page {currentPage} of {totalPages}
       </span>
-      
+
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
@@ -121,7 +140,9 @@ export default function Leaderboard() {
         withCredentials: true,
       })
       .then((response) => {
-        const sortedUsers = response.data.sort((a, b) => b.dailyPoints - a.dailyPoints);
+        const sortedUsers = response.data.sort(
+          (a, b) => b.dailyPoints - a.dailyPoints
+        );
         setUsers(sortedUsers);
         setFilteredUsers(sortedUsers);
       })
@@ -132,7 +153,7 @@ export default function Leaderboard() {
 
   useEffect(() => {
     if (users) {
-      const filtered = users.filter(user =>
+      const filtered = users.filter((user) =>
         user.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredUsers(filtered);
@@ -142,7 +163,10 @@ export default function Leaderboard() {
 
   const totalPages = Math.ceil((filteredUsers?.length || 0) / usersPerPage);
   const startIndex = (currentPage - 1) * usersPerPage;
-  const currentUsers = filteredUsers?.slice(startIndex, startIndex + usersPerPage);
+  const currentUsers = filteredUsers?.slice(
+    startIndex,
+    startIndex + usersPerPage
+  );
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);

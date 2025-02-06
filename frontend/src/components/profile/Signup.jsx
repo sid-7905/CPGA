@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import {
   showSuccessToast,
-  showErrorToast
+  showErrorToast,
+  showLoaderToast
 } from "../toastify.jsx";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { User, Mail, Lock, Camera, Home } from "lucide-react";
 
 const Form = () => {
@@ -51,20 +52,20 @@ const Form = () => {
       !formData.email ||
       !formData.password
     ) {
-      setError(
+      showErrorToast(
         "Please fill in all required fields (Name, Phone, Email, Password)"
       );
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      showErrorToast("Passwords do not match");
       return;
     }
 
     const token = localStorage.getItem("token");
     if (token) {
-      setError("You are already logged in. Kindly logout first.");
+      showErrorToast("You are already logged in. Kindly logout first.");
       return;
     }
 
@@ -74,6 +75,8 @@ const Form = () => {
     formdata.append("username", formData.username);
     formdata.append("email", formData.email);
     formdata.append("password", formData.password);
+
+    showLoaderToast("Creating account..."); 
 
     try {
       const response = await axios.post(
@@ -86,7 +89,7 @@ const Form = () => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
       // console.log(response);
-
+      toast.dismiss();
       showSuccessToast("User added successfully"); // Notify user of success
       setFormData({
         file: "",
@@ -98,23 +101,16 @@ const Form = () => {
       });
 
       setPreviewImage(null);
-      setError("");
       window.location.replace("/getIds");
     } catch (err) {
-      setError(err?.response?.data?.message);
+      console.log(err?.response?.data?.message);
+      showErrorToast(err?.response?.data?.message);
     }
   };
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 to-black flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {error && (
-          <>
-            {showErrorToast(error)}
-            {setError("")}
-          </>
-        )}
-
         <div className="backdrop-blur-lg bg-gray-900/50 p-8 rounded-2xl border border-gray-800 shadow-2xl">
           <div className="mb-8 text-center">
             <h1 className="text-4xl font-bold bg-gradient-to-r from-[#64ffda] to-cyan-300 bg-clip-text text-transparent">
