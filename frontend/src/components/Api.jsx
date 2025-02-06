@@ -1,4 +1,5 @@
 import axios from "axios";
+import { LetterText } from "lucide-react";
 const backendURL = process.env.REACT_APP_BACKEND_URL;
 
  function getApiUrl(key, platformID) {
@@ -28,13 +29,13 @@ export function FetchData(key, token, id) {
            const platformID =user?.platformIds?.[0]?.[platform];
 
           if (platformID) {
-            console.log(`${platform}` + " ID: " + platformID); 
+            // console.log(`${platform}` + " ID: " + platformID); 
             const DataResponse = await axios.get(
               getApiUrl(key, platformID)
             );
             return DataResponse.data;
           } else {
-            console.log(`Platform ID for ${platform} not found`);
+            // console.log(`Platform ID for ${platform} not found`);
             return;
           }
         } catch (err) {
@@ -144,3 +145,46 @@ export async function updateProblemStatus({contestId, index, points}) {
     return
   }
 }
+
+
+export async function getMainLeaderBoardData(userData) {
+  try {
+    const users = await Promise.all(
+      userData.map(async (user) => {
+        try {
+          const [CCData, CFData, LCContestData] = await Promise.all([
+            FetchData("CCData", localStorage.getItem("token"), user._id),
+            FetchData("CFData", localStorage.getItem("token"), user._id),
+            FetchData("LCContestData", localStorage.getItem("token"), user._id),
+          ]);
+
+            return {
+            username: user.username,
+            name: user.name,
+            codeChefRating: Math.floor(CCData?.currentRating || 0),
+            leetCodeRating: Math.floor(LCContestData?.userContestRanking?.rating || 0),
+            codeForcesRating: Math.floor(CFData?.result?.[CFData?.result?.length - 1]?.newRating || 0),
+            image: user.image,
+            totalRating:
+              Math.floor(CCData?.currentRating || 0) +
+              Math.floor(LCContestData?.userContestRanking?.rating || 0) +
+              Math.floor(CFData?.result?.[CFData?.result?.length - 1]?.newRating || 0),
+            _id: user._id,
+            codeForcesID : user.platformIds?.[0]?.["Codeforces"],
+            codeChefID : user.platformIds?.[0]?.["CodeChef"],
+            leetCodeID : user.platformIds?.[0]?.["LeetCode"],
+            };
+        } catch (err) {
+          console.error(`Failed to fetch data for user: ${user._id}`, err);
+          return null; // Return null for users whose data couldn't be fetched
+        }
+      })
+    );
+
+    return users.filter((user) => user !== null); // Filter out null entries
+  } catch (err) {
+    console.error("Failed to process leaderboard data:", err);
+    throw err; // Re-throw the error to be handled by the caller
+  }
+}
+

@@ -6,7 +6,7 @@ import CFRatingGraph from "./RatingGraphs/CFRatingGraph.jsx";
 import LCRatingGraph from "./RatingGraphs/LCRatingGraph.jsx";
 import CPStatsPieChart from "./PieChart.jsx";
 import ShowLCBadges from "./showLCBadges.jsx";
-import { Loader } from "./loader/loader.jsx";
+import { Loader } from "../loader/loader.jsx";
 import useFetchWithLocalStorage from "../FetchWithLocalStorage.jsx";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

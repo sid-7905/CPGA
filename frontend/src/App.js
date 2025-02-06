@@ -8,13 +8,14 @@ import Home from "./components/Home.jsx";
 import About from "./components/landingpages/about.jsx";
 import Profile from "./components/profile/Profile.jsx";
 import Idform from "./components/profile/Idform.jsx";
-import Leaderboard from "./components/leaderBoard/Leaderboard.jsx";
+import LeaderBoard from "./components/leaderBoard/leaderBoard.jsx";
 import DailyProblems from "./components/dailyProblemPage/DailyProblems.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import DailyProblemForm from "./components/dailyProblemPage/DailyProblemForm.jsx";
 import EditProfile from "./components/profile/editProfile/EditProfile.jsx";
 import Discussion from "./components/discussionPage/discussion.jsx";
-import ErrorPage from "./components/errorPage.jsx";
+import MainLeaderBoard from "./components/leaderBoard/mainLeaderBoard.jsx";
+import ErrorPage from "./components/errorPage.jsx"
 
 function checkLogin() {
   const token = localStorage.getItem("token");
@@ -52,8 +53,8 @@ function App() {
       element: checkLogin() ? <Idform /> : <Login />,
     },
     {
-      path: "/leaderboard",
-      element: checkLogin() ? <Leaderboard /> : <Login />,
+      path: "/leaderBoard",
+      element: checkLogin() ? <LeaderBoard /> : <Login />,
     },
     {
       path: "/dailyproblems",
@@ -72,9 +73,13 @@ function App() {
       element: checkLogin() ? <Discussion /> : <Login />,
     },
     {
+      path: "/mainLeaderBoard",
+      element: <MainLeaderBoard />,
+    },
+    {
       path: "*",
       element: <ErrorPage />,
-    }
+    },
   ]);
 
   return (

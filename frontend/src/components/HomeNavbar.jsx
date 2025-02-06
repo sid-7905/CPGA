@@ -7,12 +7,9 @@ import {
   MenuItem,
   MenuItems,
 } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { NavLink } from "react-router-dom";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import { showErrorToast, showInfoToast, showLoaderToast } from "./toastify";
+import { ToastContainer } from "react-toastify";
 import { User } from "lucide-react";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
@@ -22,6 +19,8 @@ const navigation = [
   { name: "Discussion", to: "/discussion" },
   { name: "Leaderboard", to: "/leaderboard" },
   { name: "Daily Problems", to: "/dailyProblems" },
+  {name: "MainLeaderBoard", to: "/mainLeaderBoard"},
+  { name: "Contest", to: "/contest" },
 ];
 
 function classNames(...classes) {

@@ -4,8 +4,6 @@ import axios from "axios";
 import { NavLink } from "react-router-dom";
 import HomeNavbar from "../HomeNavbar";
 import { Trophy, Medal, Award, Search, ChevronLeft, ChevronRight, User } from 'lucide-react';
-
-
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const LeaderboardRow = ({ user, index, backendUrl }) => {
