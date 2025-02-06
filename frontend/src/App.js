@@ -8,7 +8,7 @@ import Home from "./components/Home.jsx";
 import About from "./components/landingpages/about.jsx";
 import Profile from "./components/profile/Profile.jsx";
 import Idform from "./components/profile/Idform.jsx";
-import LeaderBoard from "./components/leaderBoard/leaderBoard.jsx";
+import LeaderBoard from "./components/leaderBoard/dailyLeaderBoard.jsx";
 import DailyProblems from "./components/dailyProblemPage/DailyProblems.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import DailyProblemForm from "./components/dailyProblemPage/DailyProblemForm.jsx";

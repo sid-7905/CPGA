@@ -17,9 +17,9 @@ const backendUrl = process.env.REACT_APP_BACKEND_URL;
 const navigation = [
   { name: "Dashboard", to: "/" },
   { name: "Discussion", to: "/discussion" },
-  { name: "Leaderboard", to: "/leaderboard" },
+  { name: "Daily Leaderboard", to: "/leaderboard" },
   { name: "Daily Problems", to: "/dailyProblems" },
-  {name: "MainLeaderBoard", to: "/mainLeaderBoard"},
+  {name: "Main Leaderboard", to: "/mainLeaderBoard"},
   { name: "Contest", to: "/contest" },
 ];
 
