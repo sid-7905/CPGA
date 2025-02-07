@@ -22,8 +22,10 @@ const registerUser = async (req, res) => {
       .status(400)
       .json({ status: "failed", message: "Username already exists" });
   }
-
-  const image_url = await uploadImage(req.file.path);
+  let image_url = "";
+  if(req.file && req.file.path){
+  image_url = await uploadImage(req.file.path);
+  }
 
   bcrypt.genSalt(10, (_err, salt) => {
     bcrypt.hash(password, salt, async (err, hash) => {

@@ -191,7 +191,10 @@ const updateUserInformation = async (req, res) => {
       name,
       username,
     };
-    const image_url = await uploadImage(req.file.path);
+    let image_url = "";
+    if(req.file && req.file.path){
+     image_url= await uploadImage(req.file?.path);
+    }
 
     if (image_url) {
       updateData.image = image_url;
