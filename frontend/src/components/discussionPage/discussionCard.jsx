@@ -143,7 +143,7 @@ const DiscussionCard = ({ discussion, onUpdate }) => {
                         <NavLink 
                         to={`/profile/${discussion.author._id}`}>
                             <img
-                                src={`${backendUrl}/images/uploads/${discussion.author.image}`}
+                                src={discussion.author.image}
                                 alt="Profile"
                                 className="h-full w-full rounded-full object-cover"
                             />
@@ -244,7 +244,7 @@ const DiscussionCard = ({ discussion, onUpdate }) => {
                                     <div className="w-8 h-8 rounded-full overflow-hidden shadow-lg">
                                         {comment?.author?.image ? (
                                             <img
-                                                src={`${backendUrl}/images/uploads/${comment.author.image}`}
+                                                src={comment.author.image}
                                                 alt="Profile"
                                                 className="h-full w-full rounded-full object-cover"
                                             />
