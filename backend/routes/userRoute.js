@@ -1,5 +1,5 @@
 const express = require("express");
-const {registerUser, loginUser, addPlatforms} = require("../controllers/userController.jsx");
+const {registerUser, loginUser, addPlatforms} = require("../controllers/userController.js");
 const router = express.Router();
 const multer = require("multer");
 var uploader = multer({

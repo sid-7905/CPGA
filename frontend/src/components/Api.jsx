@@ -1,5 +1,4 @@
 import axios from "axios";
-import { LetterText } from "lucide-react";
 const backendURL = process.env.REACT_APP_BACKEND_URL;
 
  function getApiUrl(key, platformID) {
@@ -47,25 +46,20 @@ export function FetchData(key, token, id) {
       return fetchUserData();
 }
 
-export async function fetchCodeChefData(key ,token, id) {
+export async function fetchCCProblemCount(key, token, id) {
   try {
-    const response = await axios.get(`${backendURL}/api/${id}`, {
+    const response = await axios.get(`${backendURL}/api/getcc-problem-count/${id}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
+      withCredentials: true,
     });
-    const user = response.data?.user;
-    const userHandle =user?.platformIds?.[0]?.["CodeChef"];
-    const ccresponse = await axios.post(`${backendURL}/api/getcc-problem-count`, { userHandle }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return ccresponse.data.totalProblemsSolved;
-  } catch (err) {
-    console.log(err?.message);
+    return response.data.totalProblemsSolved;
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
   }
-};
+}
 
 
 export async function getDailyProblem() {

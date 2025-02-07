@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const discussionController = require("../controllers/discussionController.jsx");
+const discussionController = require("../controllers/discussionController.js");
 const auth = require("../middleware/auth");
 const {
     addComment,
     getComments,
     toggleLike,
     toggleDislike,
-  } = require('../controllers/commentController.jsx');
+  } = require('../controllers/commentController.js');
 
 router.use(auth); 
 

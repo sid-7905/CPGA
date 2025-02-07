@@ -16,7 +16,7 @@ import {
   CombineHeatMapData,
   ConvertLCData,
 } from "../utils/modifyData.jsx";
-import { FetchData, fetchCodeChefData } from "../Api.jsx";
+import { FetchData, fetchCCProblemCount } from "../Api.jsx";
 import {
   showSuccessToast,
   showErrorToast,
@@ -53,13 +53,13 @@ export default function Dashboard() {
     setError,
     specialRefresh
   );
-  // const fetchCCSolved = useFetchWithLocalStorage(
-  //   "CCSolved",
-  //   fetchCodeChefData,
-  //   setCCProblemsSolved,
-  //   setError,
-  //   specialRefresh
-  // );
+  const fetchCCSolved = useFetchWithLocalStorage(
+    "CCSolved",
+    fetchCCProblemCount,
+    setCCProblemsSolved,
+    setError,
+    specialRefresh
+  );
   const fetchCFData = useFetchWithLocalStorage(
     "CFData",
     fetchData,
@@ -129,7 +129,7 @@ export default function Dashboard() {
     if (platform === "CodeChef") {
       fetchFunctions = [
         fetchCCData(true),
-        //  fetchCCSolved(true)
+         fetchCCSolved(true)
         ];
     } else if (platform === "CodeForces") {
       fetchFunctions = [

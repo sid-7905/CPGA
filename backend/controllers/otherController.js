@@ -1,5 +1,7 @@
 const UserModel = require("../models/userModel");
 const bcrypt = require("bcryptjs");
+const cheerio = require("cheerio");
+const axios = require("axios");
 
 const addPlatforms = async (req, res) => {
   const userId = req.params.id;
@@ -34,60 +36,44 @@ const getAllUsers = async (req, res) => {
   res.json(users);
 };
 
-const puppeteer = require("puppeteer");
-
 const ccProblemCount = async (req, res) => {
-  const { userHandle } = req.body;
-
-  if (!userHandle) {
-    return res.status(400).json({ error: "User handle is required" });
-  }
-
-  const url = `https://www.codechef.com/users/${userHandle}`;
-
+  const userId = req.params.id;
   try {
-    // Launch Puppeteer
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-gpu",
-        "--disable-dev-shm-usage",
-      ],
-    });
-    const page = await browser.newPage();
-
-    // Navigate to CodeChef user page
-    await page.goto(url, { waitUntil: "domcontentloaded" });
-
-    // Extract the "Total Problems Solved" text
-    const totalProblemsSolved = await page.evaluate(() => {
-      const h3Tag = Array.from(document.querySelectorAll("h3")).find((h3) =>
-        h3.textContent.includes("Total Problems Solved")
-      );
-      if (h3Tag) {
-        // Use a regular expression to extract the integer value
-        const match = h3Tag.textContent.match(/\d+/);
-        return match ? parseInt(match[0], 10) : null;
+      // Fetch user from the database
+      const user = await UserModel.findOne({ _id: userId }); 
+      if (!user) {
+          return { error: "User not found in database" };
       }
 
-      return null;
-    });
+      const platformID =user?.platformIds?.[0]?.["CodeChef"];
+      const url = `https://www.codechef.com/users/${platformID}`;
+     
+        // Fetch the HTML page
+        const { data } = await axios.get(url, { timeout: 5000 });
 
-    // Close the browser
-    await browser.close();
+        // Load HTML into Cheerio
+        const $ = cheerio.load(data);
 
-    if (totalProblemsSolved) {
-      res.json({ totalProblemsSolved });
-    } else {
-      res.status(404).json({ error: "User or data not found" });
+        // Find the "Total Problems Solved" section
+        let totalProblemsSolved = null;
+
+        $("h3").each((i, elem) => {
+            const text = $(elem).text().trim();
+            if (text.includes("Total Problems Solved")) {
+                const match = text.match(/\d+/); // Extract first number
+                totalProblemsSolved = match ? parseInt(match[0], 10) : null;
+            }
+        });
+
+        // Send JSON response
+        res.json({ totalProblemsSolved });
+
+    } catch (error) {
+        console.error("Error fetching data:", error.message);
+        res.status(500).json({ error: "Failed to fetch data from CodeChef" });
     }
-  } catch (error) {
-    console.error(`Failed to fetch the page: ${error.message}`);
-    res.status(500).json({ error: "Internal server error" });
-  }
 };
+
 
 const addDailyProblemPreferences = async (req, res) => {
   const userId = req.user.userID;
@@ -192,8 +178,8 @@ const updateUserInformation = async (req, res) => {
       username,
     };
     let image_url = "";
-    if(req.file && req.file.path){
-     image_url= await uploadImage(req.file?.path);
+    if (req.file && req.file.path) {
+      image_url = await uploadImage(req.file?.path);
     }
 
     if (image_url) {

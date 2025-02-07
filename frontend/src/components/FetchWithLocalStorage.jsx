@@ -64,20 +64,15 @@ function useFetchWithLocalStorage(
               return parseInt(parseFloat(timeToFetch) * 60);
             }
           } catch (fetchError) {
-            // Handle specific fetch errors
             if (fetchError.response) {
-              // Server responded with error
               throw new Error(fetchError.response.data?.message || 'Server error occurred');
             } else if (fetchError.request) {
-              // Request made but no response
               throw new Error('No response from server');
             } else {
-              // Something else went wrong
               throw new Error(fetchError.message || 'Failed to fetch data');
             }
           }
         } else {
-          // Use cached data
           try {
             const cachedData = getFromLocalStorage(key);
             if (!cachedData || !cachedData.data) {
@@ -86,19 +81,15 @@ function useFetchWithLocalStorage(
             setData(cachedData.data);
             if (specialRefresh) return parseInt(parseFloat(timeToFetch) * 60);
           } catch (cacheError) {
-            // Handle cache reading errors
             console.error('Cache error:', cacheError);
-            // If cache fails, try fetching fresh data
             const data = await fetchFunction(key, token, id);
             setData(data);
             setToLocalStorage(key, { data, timestamp: new Date().getTime() });
           }
         }
       } catch (error) {
-        // Log error for debugging
         console.error(`Error in fetchData for ${key}:`, error);
         
-        // Clear invalid cache if necessary
         if (error.message.includes('Cache is invalid')) {
           localStorage.removeItem(key);
         }
