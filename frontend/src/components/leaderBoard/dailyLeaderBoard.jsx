@@ -12,6 +12,8 @@ import {
   ChevronRight,
   User,
 } from "lucide-react";
+import {showSuccessToast, showErrorToast, showLoaderToast} from '../toastify';
+import { toast } from "react-toastify";
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const LeaderboardRow = ({ user, index, backendUrl }) => {
@@ -132,6 +134,7 @@ export default function Leaderboard() {
   const usersPerPage = 5;
 
   useEffect(() => {
+    showLoaderToast("Fetching leaderboard data...");
     axios
       .get(`${backendUrl}/api/getAllUsers`, {
         headers: {
@@ -140,13 +143,16 @@ export default function Leaderboard() {
         withCredentials: true,
       })
       .then((response) => {
+        toast.dismiss();
         const sortedUsers = response.data.sort(
           (a, b) => b.dailyPoints - a.dailyPoints
         );
         setUsers(sortedUsers);
         setFilteredUsers(sortedUsers);
+        showSuccessToast("Leaderboard data fetched successfully!");
       })
       .catch((error) => {
+        showErrorToast("Failed to fetch leaderboard data!");
         console.error("Error fetching leaderboard data from backend:", error);
       });
   }, []);
