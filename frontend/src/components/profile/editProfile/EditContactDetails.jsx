@@ -1,8 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { showSuccessToast, showErrorToast } from "../../toastify";
+import { showSuccessToast, showErrorToast, showLoaderToast } from "../../toastify";
 import axios from "axios";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 export default function EditContactDetails() {
@@ -35,6 +35,7 @@ export default function EditContactDetails() {
     const formdata = {
       email: formData.email,
     }
+    showLoaderToast("Updating email...");
     axios
       .post(
         `${backendUrl}/api/update-email`,
@@ -46,6 +47,7 @@ export default function EditContactDetails() {
         }
       )
       .then((response) => {
+        toast.dismiss();
         if (response.data.success) {
           localStorage.setItem("user", JSON.stringify(response.data.user));
           showSuccessToast("Email updated successfully");
@@ -55,6 +57,7 @@ export default function EditContactDetails() {
         }
       })
       .catch((error) => {
+        toast.dismiss();
         showErrorToast("Server error");
         console.error("Error updating email:", error);
       });

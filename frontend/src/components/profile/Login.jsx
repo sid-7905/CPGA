@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast} from "react-toastify";
-import { showSuccessToast, showErrorToast, showLoaderToast} from "../toastify";
+import { ToastContainer, toast } from "react-toastify";
+import { showSuccessToast, showErrorToast, showLoaderToast } from "../toastify";
 import { User, Lock, Home } from "lucide-react";
 
 const Login = () => {
@@ -28,21 +28,22 @@ const Login = () => {
       return;
     }
 
-     showLoaderToast("Logging in...");
+    showLoaderToast("Logging in...");
 
     axios
       .post(`${BackendUrl}/api/user/login`, formData)
       .then((res) => {
-      const { token, user } = res.data;
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      window.location.href = "/";
-      toast.dismiss();
-      showSuccessToast("Login successful");
-      setError("");
+        const { token, user } = res.data;
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+        window.location.href = "/";
+        toast.dismiss();
+        showSuccessToast("Login successful");
+        setError("");
       })
       .catch((err) => {
-      setError(err?.response?.data?.message);
+        toast.dismiss();
+        setError(err?.response?.data?.message);
       });
   };
 

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Shield } from "lucide-react";
-import { showErrorToast, showSuccessToast, showInfoToast} from "../../toastify";
-import { ToastContainer } from "react-toastify";
+import { showErrorToast, showSuccessToast, showInfoToast, showLoaderToast} from "../../toastify";
+import { toast, ToastContainer } from "react-toastify";
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const PasswordUpdateForm = () => {
@@ -28,6 +28,8 @@ const PasswordUpdateForm = () => {
       return;
     }
 
+    showLoaderToast("Updating password...");
+
     try {
       const response = await axios.put(
         `${backendUrl}/api/update-password`,
@@ -43,6 +45,7 @@ const PasswordUpdateForm = () => {
         }
       );
 
+      toast.dismiss();
       if (response.data.success) {
         showSuccessToast("Password updated successfully");
         setShowPasswordForm(false); // Hide the form after successful update
@@ -50,6 +53,7 @@ const PasswordUpdateForm = () => {
         showErrorToast(response.data.message || "Failed to update password");
       }
     } catch (error) {
+      toast.dismiss();
       console.error("Error updating password:", error);
       if (error.response) {
         showErrorToast(error.response.data.message || "Failed to update password");
