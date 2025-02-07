@@ -99,7 +99,7 @@ export default function Example() {
                     <div className="w-10 h-10 rounded-full overflow-hidden border-1 border-[#64ffda] shadow-lg">
                       {image ? (
                         <img
-                          src={`${backendUrl}/images/uploads/${image}`}
+                          src={image}
                           alt="Profile"
                           className="h-full w-full rounded-full object-cover bg-transparent"
                         />

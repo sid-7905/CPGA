@@ -54,7 +54,7 @@ const LeaderboardRow = ({ user, rank }) => (
       <div className="w-10 h-10 rounded-full overflow-hidden shadow-lg">
         {user?.image ? (
           <img
-            src={`${backendUrl}/images/uploads/${user.image}`}
+            src={user.image}
             alt="Profile"
             className="h-full w-full rounded-full object-cover"
           />

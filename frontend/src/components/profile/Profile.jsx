@@ -79,7 +79,7 @@ const Profile = () => {
                 <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-[#64ffda] shadow-lg">
                   {userData?.image? (
                     <img
-                      src={`${backendUrl}/images/uploads/${userData.image}`}
+                      src={userData.image}
                       alt="Profile"
                       className="h-full w-full rounded-full object-cover"
                     />

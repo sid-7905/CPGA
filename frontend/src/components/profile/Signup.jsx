@@ -103,6 +103,7 @@ const Form = () => {
       setPreviewImage(null);
       window.location.replace("/getIds");
     } catch (err) {
+      toast.dismiss();
       console.log(err?.response?.data?.message);
       showErrorToast(err?.response?.data?.message);
     }

@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const UserModel = require("../models/userModel");
 const secretkey = process.env.SECRET_KEY;
+const uploadImage = require("../config/upload.js");
 
 const registerUser = async (req, res) => {
   const { name, email, username, password } = req.body;
@@ -22,14 +23,13 @@ const registerUser = async (req, res) => {
       .json({ status: "failed", message: "Username already exists" });
   }
 
-  // Check if file was uploaded and use a fallback if not
-  const image = req.file ? req.file.filename : "";
+  const image_url = await uploadImage(req.file.path);
 
   bcrypt.genSalt(10, (_err, salt) => {
     bcrypt.hash(password, salt, async (err, hash) => {
       if (err) throw err;
       const user = new UserModel({
-        image: image,
+        image: image_url,
         name,
         email,
         username,

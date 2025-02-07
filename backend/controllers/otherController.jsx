@@ -25,7 +25,7 @@ const getProfile = async (req, res) => {
   delete userObject._id;
   userObject.id = user._id;
   res.json({
-    user: userObject
+    user: userObject,
   });
 };
 
@@ -56,7 +56,7 @@ const ccProblemCount = async (req, res) => {
         "--disable-dev-shm-usage",
       ],
     });
-        const page = await browser.newPage();
+    const page = await browser.newPage();
 
     // Navigate to CodeChef user page
     await page.goto(url, { waitUntil: "domcontentloaded" });
@@ -159,6 +159,8 @@ const updateProblemStatus = async (req, res) => {
   res.json({ message: "Problem status updated successfully" });
 };
 
+const uploadImage = require("../config/upload.js");
+
 const updateUserInformation = async (req, res) => {
   try {
     const { name, username } = req.body;
@@ -189,10 +191,10 @@ const updateUserInformation = async (req, res) => {
       name,
       username,
     };
+    const image_url = await uploadImage(req.file.path);
 
-    const image = req.file ? req.file.filename : "";
-    if (image) {
-      updateData.image = image;
+    if (image_url) {
+      updateData.image = image_url;
     }
 
     // Update user in database
@@ -307,7 +309,10 @@ const updatePassword = async (req, res) => {
     }
 
     // Verify the current password
-    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
     if (!isPasswordValid) {
       return res.status(400).json({
         success: false,
@@ -363,5 +368,5 @@ module.exports = {
   updateProblemStatus,
   updateUserInformation,
   updateEmail,
-  updatePassword
+  updatePassword,
 };

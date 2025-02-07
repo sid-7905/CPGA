@@ -1,8 +1,8 @@
 import React from "react";
 import { Camera, User, Edit } from "lucide-react";
 import { useState, useEffect } from "react";
-import { showErrorToast, showSuccessToast } from "../../toastify";
-import { ToastContainer } from "react-toastify";
+import { showErrorToast, showLoaderToast, showSuccessToast } from "../../toastify";
+import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -30,6 +30,9 @@ export default function EditUserInfo() {
     formdata.append("name", formData.fullName);
     formdata.append("username", formData.userName);
     formdata.append("file", formData.file);
+
+    showLoaderToast("Updating profile...");
+
     axios
       .post(
         `${backendUrl}/api/update-user-info`,
@@ -41,6 +44,7 @@ export default function EditUserInfo() {
         }
       )
       .then((response) => {
+        toast.dismiss();
         if (response.data.success) {
           localStorage.setItem("user", JSON.stringify(response.data.user));
           showSuccessToast("Profile updated successfully");
@@ -50,15 +54,14 @@ export default function EditUserInfo() {
         }
       })
       .catch((error) => {
+        toast.dismiss();
         showErrorToast("Server error");
         console.error("Error updating profile:", error);
       });
     
   };
 
-  const [previewImage, setPreviewImage] = useState(
-    `${backendUrl}/images/uploads/${user.image}`
-  );
+  const [previewImage, setPreviewImage] = useState(user.image);
 
 // Handle file input change
 const handleImageChange = (e) => {
