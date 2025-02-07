@@ -49,10 +49,16 @@ const IdForm = () => {
       return;
     }
 
+    const trimmedIds = {
+      Codeforces: ids.Codeforces.trim(),
+      CodeChef: ids.CodeChef.trim(),
+      LeetCode: ids.LeetCode.trim(),
+    };
+
     try {
       const response = await axios.post(
         `${backendUrl}/api/${userid}/addPlatforms`,
-        ids,
+        trimmedIds,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

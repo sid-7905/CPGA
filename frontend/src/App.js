@@ -74,7 +74,7 @@ function App() {
     },
     {
       path: "/mainLeaderBoard",
-      element: <MainLeaderBoard />,
+      element: checkLogin() ? <MainLeaderBoard /> : <Login />
     },
     {
       path: "*",
