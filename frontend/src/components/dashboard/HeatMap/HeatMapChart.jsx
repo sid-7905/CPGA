@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useState } from 'react';
 import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
 import { Tooltip } from "react-tooltip";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import "./HeatMapStyle.css";
 
-const HeatMapChart = ({ heatMapData }) => {
+const DynamicHeatMap = ({ heatMapData }) => {
+  const [timeOffset, setTimeOffset] = useState(0); // Number of 9-month periods to look back
+
+  // Calculate date ranges
+  const calculateDateRange = () => {
+    const endDate = new Date();
+    endDate.setMonth(endDate.getMonth() - (9 * timeOffset));
+    const startDate = new Date(endDate);
+    startDate.setMonth(startDate.getMonth() - 9);
+    return { startDate, endDate };
+  };
+
+  const { startDate, endDate } = calculateDateRange();
+
   const transformedData = heatMapData.map((item) => ({
     date: item.date,
     count: item.value,
@@ -31,22 +45,47 @@ const HeatMapChart = ({ heatMapData }) => {
     });
   };
 
+  const handlePrevious = () => {
+    setTimeOffset(prev => prev + 1);
+  };
+
+  const handleNext = () => {
+    setTimeOffset(prev => Math.max(0, prev - 1));
+  };
+
   return (
     <div className="w-full p-4">
       <div className="text-white flex flex-col items-center justify-center gap-4">
-        <h3 className="text-xl font-semibold text-gray-200">Activity Heatmap</h3>
+        <div className="flex items-center justify-between w-full">
+          <h3 className="text-xl font-semibold text-gray-200">Activity Heatmap</h3>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handlePrevious}
+              className="text-gray-400 hover:text-gray-200"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={handleNext}
+              className="text-gray-400 hover:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={timeOffset === 0}
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
         
         <div className="w-full relative">
           <CalendarHeatmap
-            startDate={new Date("2024-04-01")}
-            endDate={new Date("2024-12-31")}
+            startDate={startDate}
+            endDate={endDate}
             values={transformedData}
             classForValue={getClassForValue}
             tooltipDataAttrs={(value) => ({
               "data-tooltip-id": "heatmap-tooltip",
               "data-tooltip-content": value && value.date 
                 ? `${formatDate(value.date)}: ${value.count} contributions` 
-                : "No contributions",
+                : 'No contributions',
             })}
             showWeekdayLabels={true}
             weekdayLabels={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
@@ -81,4 +120,4 @@ const HeatMapChart = ({ heatMapData }) => {
   );
 };
 
-export default HeatMapChart;
+export default DynamicHeatMap;

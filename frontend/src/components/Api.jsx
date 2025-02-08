@@ -51,8 +51,7 @@ export async function fetchCCProblemCount(key, token, id) {
     const response = await axios.get(`${backendURL}/api/getcc-problem-count/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      withCredentials: true,
+      }
     });
     return response.data.totalProblemsSolved;
   } catch (error) {
