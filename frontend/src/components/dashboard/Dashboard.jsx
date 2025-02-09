@@ -174,19 +174,20 @@ export default function Dashboard() {
     LCData &&
     CFUserInfo &&
     LCContestData &&
-    // CCProblemsSolved &&
+    CCProblemsSolved &&
     userHandle;
-  const [timeoutReached, setTimeoutReached] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setTimeoutReached(true);
-    }, 5000); // 30 seconds
+  // const [timeoutReached, setTimeoutReached] = useState(true);
 
-    return () => clearTimeout(timer);
-  }, []);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setTimeoutReached(true);
+  //   }, 5000); // 30 seconds
 
-  if (!allDataFetched && !timeoutReached) {
+  //   return () => clearTimeout(timer);
+  // }, []);
+
+  if (!allDataFetched) {
     return (
       <div className="h-screen flex flex-col items-center justify-center gap-4">
         <Loader />
