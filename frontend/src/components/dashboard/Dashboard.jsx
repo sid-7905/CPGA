@@ -177,17 +177,17 @@ export default function Dashboard() {
     CCProblemsSolved &&
     userHandle;
 
-  // const [timeoutReached, setTimeoutReached] = useState(true);
+  const [timeoutReached, setTimeoutReached] = useState(true);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setTimeoutReached(true);
-  //   }, 5000); // 30 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeoutReached(true);
+    }, 5000); // 30 seconds
 
-  //   return () => clearTimeout(timer);
-  // }, []);
+    return () => clearTimeout(timer);
+  }, []);
 
-  if (!allDataFetched) {
+  if (!allDataFetched && !timeoutReached) {
     return (
       <div className="h-screen flex flex-col items-center justify-center gap-4">
         <Loader />
