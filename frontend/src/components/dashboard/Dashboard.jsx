@@ -177,12 +177,12 @@ export default function Dashboard() {
     CCProblemsSolved &&
     userHandle;
 
-  const [timeoutReached, setTimeoutReached] = useState(true);
+  const [timeoutReached, setTimeoutReached] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setTimeoutReached(true);
-    }, 5000); // 30 seconds
+    }, 15000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -191,7 +191,7 @@ export default function Dashboard() {
     return (
       <div className="h-screen flex flex-col items-center justify-center gap-4">
         <Loader />
-        <div className="text-lg text-white">Loading data, please wait...</div>
+        <div className="text-lg text-white">Loading data, this may take few seconds, please wait...</div>
       </div>
     );
   }
