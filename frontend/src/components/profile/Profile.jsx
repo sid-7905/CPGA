@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
-import { showErrorToast, showSuccessToast } from "../toastify";
+import { showErrorToast, showLoaderToast, showSuccessToast } from "../toastify";
 import { User } from "lucide-react";
+import { toast } from "react-toastify";
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const Profile = () => {
@@ -17,6 +18,7 @@ const Profile = () => {
       setUserData(user);
       return;
     }
+    showLoaderToast("Fetching user data...");
     axios
       .get(`${backendUrl}/api/${id}`, {
         headers: {
@@ -24,11 +26,12 @@ const Profile = () => {
         },
       })
       .then((response) => {
+        toast.dismiss();
         setUserData(response.data.user);
-        console.log(response.data);
         showSuccessToast("User data fetched successfully");
       })
       .catch((error) => {
+        toast.dismiss();
         showErrorToast("Error fetching user data from backend");
         console.error("Error fetching user data from backend:", error);
       });

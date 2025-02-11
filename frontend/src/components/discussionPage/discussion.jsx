@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Plus, Search } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { showErrorToast, showSuccessToast } from "../toastify";
+import { showErrorToast, showLoaderToast, showSuccessToast } from "../toastify";
 import HomeNavbar from "../HomeNavbar";
 import DiscussionCard from "./discussionCard";
 
@@ -58,6 +58,12 @@ const DiscussionPage = () => {
       return showErrorToast("Title and content are required");
     }
 
+    if(!newDiscussion.tags) {
+      newDiscussion.tags = "General";
+    }
+
+    showLoaderToast("Creating discussion...");
+
     try {
       const response = await axios.post(
         `${backendUrl}/api/discussions/create`,
@@ -73,6 +79,7 @@ const DiscussionPage = () => {
         }
       );
       if (response.data.status === "success") {
+        toast.dismiss();
         setDiscussions([response.data.discussion, ...discussions]);
         setNewDiscussion({ title: "", content: "", tags: "" });
         showSuccessToast("Discussion created successfully");
