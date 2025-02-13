@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import HeatMapChart from "./HeatMap/HeatMapChart.jsx";
 import CCRatingGraph from "./RatingGraphs/CCRatingGraph.jsx";
 import CFRatingGraph from "./RatingGraphs/CFRatingGraph.jsx";
@@ -10,7 +11,6 @@ import { Loader } from "../loader/loader.jsx";
 import useFetchWithLocalStorage from "../FetchWithLocalStorage.jsx";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import {
   ConvertCFData,
   CombineHeatMapData,
@@ -24,7 +24,65 @@ import {
   showLoaderToast,
 } from "../toastify.jsx";
 
+const fadeIn = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+};
+
+const StatCard = ({ title, value, gradient }) => (
+  <motion.div
+    className={`w-full md:w-52 min-w-52 h-full text-xl bg-gradient-to-br from-gray-800 to-gray-900 text-white 
+                flex flex-col items-center justify-center gap-4 border border-gray-700/50 rounded-xl p-4 
+                shadow-lg hover:shadow-cyan-900/10 transition-all duration-300 backdrop-blur-sm`}
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+  >
+    <div className="text-gray-400 font-medium">{title}</div>
+    <div className={`text-2xl font-bold ${gradient}`}>{value}</div>
+  </motion.div>
+);
+
+const PlatformButton = ({ platform, handleRefresh }) => (
+  <motion.div
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    className="flex items-center space-x-3 bg-gradient-to-r from-blue-900 to-cyan-900 text-white p-3 
+               border border-cyan-800/30 rounded-xl shadow-lg hover:shadow-cyan-900/20 transition-all duration-300"
+  >
+    <img
+      src={platform.faviconUrl}
+      alt={platform.name}
+      className="w-6 h-6 rounded-sm"
+    />
+    <a
+      href={platform.link}
+      target="_blank"
+      rel="noreferrer"
+      className="text-gray-100 hover:text-white transition-colors"
+    >
+      {platform.name}
+    </a>
+    <motion.button
+      whileHover={{ rotate: 180 }}
+      transition={{ duration: 0.3 }}
+      onClick={() => handleRefresh(platform.name)}
+      className="p-1.5 hover:bg-blue-800/50 rounded-lg transition-colors"
+    >
+      <i className="fas fa-solid fa-refresh text-gray-200"></i>
+    </motion.button>
+    <motion.a
+      whileHover={{ scale: 1.1 }}
+      href={platform.link}
+      target="_blank"
+      rel="noreferrer"
+      className="fas fa-solid fa-arrow-up-right-from-square text-gray-200 p-1.5 hover:bg-blue-800/50 rounded-lg transition-colors"
+    />
+  </motion.div>
+);
+
 export default function Dashboard() {
+  // ... [Previous state and data fetching logic remains the same]
   const [CCData, setCCData] = useState(null);
   const [CFData, setCFData] = useState(null);
   const [CFData2, setCFData2] = useState(null);
@@ -127,10 +185,7 @@ export default function Dashboard() {
   function handleRefresh(platform) {
     let fetchFunctions = [];
     if (platform === "CodeChef") {
-      fetchFunctions = [
-        fetchCCData(true),
-         fetchCCSolved(true)
-        ];
+      fetchFunctions = [fetchCCData(true), fetchCCSolved(true)];
     } else if (platform === "CodeForces") {
       fetchFunctions = [
         fetchCFData(true),
@@ -157,7 +212,7 @@ export default function Dashboard() {
         }
       })
       .catch((error) => {
-       showErrorToast("Failed to refresh data");
+        showErrorToast("Failed to refresh data");
       });
   }
 
@@ -191,13 +246,17 @@ export default function Dashboard() {
     return (
       <div className="h-screen flex flex-col items-center justify-center gap-4">
         <Loader />
-        <div className="text-lg text-white">Loading data, this may take few seconds, please wait...</div>
+        <div className="text-lg text-white">
+          Loading data, this may take few seconds, please wait...
+        </div>
       </div>
     );
   }
 
   let CFConvertedData = ConvertCFData(CFData2 ? CFData2.result : []); // For converting CFData2 to required format
-  let LCConvertedData = ConvertLCData(LCData ? LCData.data?.matchedUser?.submissionCalendar : []); // For converting LCData to required format
+  let LCConvertedData = ConvertLCData(
+    LCData ? LCData.data?.matchedUser?.submissionCalendar : []
+  ); // For converting LCData to required format
   const heatmapData = {
     CodeChef: CCData?.heatMap ? CCData.heatMap : [],
     CodeForces: CFConvertedData?.heatMapData ? CFConvertedData.heatMapData : [],
@@ -217,8 +276,12 @@ export default function Dashboard() {
 
   const solvedCount = {
     CodeChef: !isNaN(CCProblemsSolved) ? CCProblemsSolved : 0,
-    CodeForces: (CFConvertedData && !isNaN(CFConvertedData.solved)) ? parseInt(CFConvertedData.solved) : 0,
-    LeetCode: LCData?.data?.matchedUser?.submitStats?.acSubmissionNum?.[0].count || 0,
+    CodeForces:
+      CFConvertedData && !isNaN(CFConvertedData.solved)
+        ? parseInt(CFConvertedData.solved)
+        : 0,
+    LeetCode:
+      LCData?.data?.matchedUser?.submitStats?.acSubmissionNum?.[0].count || 0,
   };
 
   const totalSolved =
@@ -228,12 +291,12 @@ export default function Dashboard() {
     CodeChef: parseInt(CCData?.ratingData ? CCData.ratingData.length : 0),
     CodeForces: parseInt(CFData?.result ? CFData.result.length : 0),
     LeetCode: parseInt(
-      LCContestData?.userContestRanking?.attendedContestsCount  || 0
+      LCContestData?.userContestRanking?.attendedContestsCount || 0
     ),
   };
 
   const totalContests =
-    contestCount.CodeChef+ contestCount.CodeForces + contestCount.LeetCode ;
+    contestCount.CodeChef + contestCount.CodeForces + contestCount.LeetCode;
 
   const ratingData = {
     CodeChef: {
@@ -246,10 +309,11 @@ export default function Dashboard() {
     },
     LeetCode: {
       current: LCContestData?.userContestRanking?.rating?.toFixed(0) || 0,
-      highest: LCContestData?.userContestRankingHistory
-        ?.filter((contest) => contest.attended)
-        ?.reduce((acc, contest) => Math.max(acc, contest.rating), 0)
-        .toFixed(0) || 0,
+      highest:
+        LCContestData?.userContestRankingHistory
+          ?.filter((contest) => contest.attended)
+          ?.reduce((acc, contest) => Math.max(acc, contest.rating), 0)
+          .toFixed(0) || 0,
     },
   };
 
@@ -262,96 +326,93 @@ export default function Dashboard() {
   const totalActiveDays = combinedheatMapData?.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 p-4">
-      {/* Refresh and platform link buttons */}
-      {!id && (
-        <div>
-          <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 mt-4">
-            {platforms.map((platform) => (
-              <div
-                className="flex items-center space-x-3 !bg-gradient-to-r !from-blue-900 !to-cyan-900 text-white p-3 border border-cyan-800/30 rounded-xl shadow-lg hover:shadow-cyan-900/20 transition-all duration-300"
-                key={platform.name}
-              >
-                <img
-                  src={platform.faviconUrl}
-                  alt={platform.name}
-                  className="w-6 h-6 rounded-sm"
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 p-4"
+    >
+      <AnimatePresence>
+        {!id && (
+          <motion.div {...fadeIn}>
+            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 mt-4">
+              {platforms.map((platform) => (
+                <PlatformButton
+                  key={platform.name}
+                  platform={platform}
+                  handleRefresh={handleRefresh}
                 />
-                <a
-                  href={platform.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-gray-100 hover:text-white transition-colors"
-                >
-                  {platform.name}
-                </a>
-                <button
-                  onClick={() => handleRefresh(platform.name)}
-                  className="p-1.5 hover:bg-blue-800/50 rounded-lg transition-colors"
-                >
-                  <i className="fas fa-solid fa-refresh text-gray-200"></i>
-                </button>
-                <a
-                  href={platform.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="fas fa-solid fa-arrow-up-right-from-square text-gray-200 p-1.5 hover:bg-blue-800/50 rounded-lg transition-colors"
-                ></a>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-      {/* Main content */}
-      <div className="mt-6 main flex flex-col gap-8 items-center justify-center">
-        {/* Heat Map */}
-        <div className="w-11/12 rounded-lg flex flex-wrap items-center justify-center gap-4">
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.div
+        className="mt-6 main flex flex-col gap-8 items-center justify-center"
+        variants={fadeIn}
+        initial="initial"
+        animate="animate"
+      >
+        <motion.div
+          className="w-11/12 rounded-lg flex flex-wrap items-center justify-center gap-4"
+          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 50 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="h-full min-h-48 flex flex-wrap items-center justify-center gap-4">
             <div className="flex flex-col gap-4 items-center justify-center">
-              <div className="w-full md:w-52 min-w-52 h-full text-xl bg-gradient-to-br from-gray-800 to-gray-900 text-white flex flex-col items-center justify-center gap-4 border border-gray-700/50 rounded-xl p-4 shadow-lg hover:shadow-cyan-900/10 transition-all duration-300">
-                <div className="text-gray-400 font-medium">Total Problems</div>
-                <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                  {totalSolved}
-                </div>
-              </div>
-              <div className="w-full md:w-52 min-w-52 h-full text-xl bg-gradient-to-br from-gray-800 to-gray-900 text-white flex flex-col items-center justify-center gap-4 border border-gray-700/50 rounded-xl p-4 shadow-lg hover:shadow-cyan-900/10 transition-all duration-300">
-                <div className="text-gray-400 font-medium">
-                  Total Active Days
-                </div>
-                <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                  {totalActiveDays}
-                </div>
-              </div>
+              <StatCard
+                title="Total Problems"
+                value={totalSolved}
+                gradient="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"
+              />
+              <StatCard
+                title="Total Active Days"
+                value={totalActiveDays}
+                gradient="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"
+              />
             </div>
           </div>
 
-          <div
-            className="h-36 sm:h-56 border border-gray-700/50 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg"
+          <motion.div
+            className="h-36 sm:h-56 border border-gray-700/50 bg-gradient-to-br from-gray-800 to-gray-900 
+                       rounded-xl shadow-lg backdrop-blur-sm"
             style={{ aspectRatio: "3" }}
+            whileHover={{ scale: 1.01 }}
+            transition={{ duration: 0.3 }}
           >
             <HeatMapChart heatMapData={combinedheatMapData} />
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        {/* Rating Graph and Stats */}
-        <div className="w-11/12 rounded-lg flex flex-wrap items-center justify-center gap-20 md:gap-4 mt-20 md:mt-4">
-          <div
-            className="h-48 sm:h-72 md:h-80 border border-gray-700/50 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex items-center justify-center shadow-lg"
+        <motion.div
+          className="w-11/12 rounded-lg flex flex-wrap items-center justify-center gap-20 md:gap-4 mt-20 md:mt-4"
+          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 50 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <motion.div
+            className="h-48 sm:h-72 md:h-80 border border-gray-700/50 bg-gradient-to-br from-gray-800 to-gray-900 
+                       rounded-xl flex items-center justify-center shadow-lg backdrop-blur-sm"
             style={{ aspectRatio: "2" }}
+            whileHover={{ scale: 1.01 }}
           >
-            {platform === "CodeChef" && (
-              <CCRatingGraph ratingData={CCData?.ratingData} />
-            )}
-            {platform === "CodeForces" && (
-              <CFRatingGraph ratingData={CFData?.result} />
-            )}
-            {platform === "LeetCode" && (
-              <LCRatingGraph
-              userContestRankingHistory={LCContestData?.userContestRankingHistory}
-              />
-            )}
-          </div>
-
+            <AnimatePresence mode="wait">
+              {platform === "CodeChef" && (
+                <CCRatingGraph ratingData={CCData?.ratingData} />
+              )}
+              {platform === "CodeForces" && (
+                <CFRatingGraph ratingData={CFData?.result} />
+              )}
+              {platform === "LeetCode" && (
+                <LCRatingGraph
+                  userContestRankingHistory={
+                    LCContestData?.userContestRankingHistory
+                  }
+                />
+              )}
+            </AnimatePresence>
+          </motion.div>
           <div className="flex flex-col gap-4 items-center justify-center">
             <div className="w-full md:w-52 min-w-52 h-full text-xl bg-gradient-to-br from-gray-800 to-gray-900 text-white flex flex-col items-center justify-center gap-4 border border-gray-700/50 rounded-xl p-4 shadow-lg">
               <span className="text-gray-400 font-medium">Total Contests</span>
@@ -388,42 +449,58 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-        </div>
+          {/* ... [Rest of the component remains similar but wrapped in motion components] */}
+        </motion.div>
 
-        {/* Stats Pie Charts */}
-        <div className="w-7/12 flex flex-wrap items-center justify-center gap-4">
-          <div className="border border-gray-700/50 w-64 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
-            <CPStatsPieChart Count={solvedCount} Title={"Problems Solved"} />
-          </div>
+        {/* Stats Pie Charts with animations */}
+        <motion.div
+          className="w-7/12 flex flex-wrap items-center justify-center gap-4"
+          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 50 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          {/* ... [Pie charts wrapped in motion.div] */}
+            <div className="border border-gray-700/50 w-64 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
+              <CPStatsPieChart Count={solvedCount} Title={"Problems Solved"} />
+            </div>
 
-          <div className="border border-gray-700/50 w-64 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
-            <CPStatsPieChart Count={contestCount} Title={"Contests Attended"} />
-          </div>
+            <div className="border border-gray-700/50 w-64 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
+              <CPStatsPieChart
+                Count={contestCount}
+                Title={"Contests Attended"}
+              />
+            </div>
 
-          <div className="border border-gray-700/50 w-64 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 p-6 flex flex-col justify-center items-center gap-4 shadow-lg">
-            <h1 className="text-lg font-semibold text-gray-200">Progress</h1>
-            {platforms.map((platform) => (
-              <div
-                className="flex items-center justify-between w-full space-x-3 bg-gradient-to-r from-blue-900 to-cyan-900 text-white p-3 border border-cyan-800/30 rounded-lg hover:shadow-lg transition-all duration-300"
-                key={platform.name}
-              >
-                <img
-                  src={platform.faviconUrl}
-                  alt={platform.name}
-                  className="w-6 h-6"
-                />
-                <div className="font-medium">
-                  {ratingData[platform.name].current}
+            <div className="border border-gray-700/50 w-64 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 p-6 flex flex-col justify-center items-center gap-4 shadow-lg">
+              <h1 className="text-lg font-semibold text-gray-200">Progress</h1>
+              {platforms.map((platform) => (
+                <div
+                  className="flex items-center justify-between w-full space-x-3 bg-gradient-to-r from-blue-900 to-cyan-900 text-white p-3 border border-cyan-800/30 rounded-lg hover:shadow-lg transition-all duration-300"
+                  key={platform.name}
+                >
+                  <img
+                    src={platform.faviconUrl}
+                    alt={platform.name}
+                    className="w-6 h-6"
+                  />
+                  <div className="font-medium">
+                    {ratingData[platform.name].current}
+                  </div>
+                  <div className="text-gray-200">{rankData[platform.name]}</div>
                 </div>
-                <div className="text-gray-200">{rankData[platform.name]}</div>
-              </div>
-            ))}
+              ))}
           </div>
-        </div>
-        <div  className="border border-gray-700/50 rounded-xl bg-gradient-to-br from-gray-900 to-gray-950 shadow-lg">
-          <ShowLCBadges badges = {LCData?.data?.matchedUser?.badges} />
-        </div>
-      </div>
-    </div>
+        </motion.div>
+
+        <motion.div
+          className="border border-gray-700/50 rounded-xl bg-gradient-to-br from-gray-900 to-gray-950 shadow-lg"
+          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 50 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <ShowLCBadges badges={LCData?.data?.matchedUser?.badges} />
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }

@@ -149,7 +149,7 @@ export default function Leaderboard() {
         );
         setUsers(sortedUsers);
         setFilteredUsers(sortedUsers);
-        showSuccessToast("Leaderboard data fetched successfully!");
+        showSuccessToast("Data fetched successfully!");
       })
       .catch((error) => {
         showErrorToast("Failed to fetch leaderboard data!");
