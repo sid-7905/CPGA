@@ -180,9 +180,9 @@ export default function DailyProblems() {
     <div className="min-h-screen flex flex-col  bg-gradient-to-b from-gray-900 to-gray-800 w-full">
       <HomeNavbar />
 
-      <div className=" w-full h-full flex flex-col items-center">
-        <div className="min-h-72 w-full flex items-center justify-center ">
-          <div className="flex backdrop-blur-sm flex-col gap-4 mb-8 w-11/12">
+      <div className=" w-full h-full flex flex-col">
+        <div className="min-h-56 w-full flex items-center justify-center ">
+          <div className="flex backdrop-blur-sm flex-col gap-2 mb-4 w-11/12">
             <ProblemPreference problemTags={problemTags} />
             <SortControls onSort={handleSort} currentSort={sortType} />
             <SearchBar onSearch={handleSearch} />
@@ -190,7 +190,7 @@ export default function DailyProblems() {
         </div>
 
         <div className="flex flex-wrap gap-4 w-full justify-evenly">
-          <div className="w-96 lg:w-1/3 h-96">
+          <div className="w-96 lg:w-1/3">
             <div className="lg:fixed">
               <Calendar problems={problems} onDayClick={scrollToProblem} />
               <FilterStats
