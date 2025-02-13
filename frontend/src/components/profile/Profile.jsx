@@ -143,7 +143,7 @@ const Profile = () => {
                         key={platform.name}
                         className="group flex items-center justify-between p-4 bg-gray-900/50 rounded-lg hover:bg-cyan-900/20 transition-all duration-300 transform hover:scale-102 hover:shadow-lg"
                       >
-                        <div className="flex items-center gap-4">
+                        <div className="flex flex-col sm:flex-row items-center gap-4">
                           <img
                             src={platform.faviconUrl}
                             alt={platform.name}

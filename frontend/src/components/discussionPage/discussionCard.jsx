@@ -219,7 +219,7 @@ const DiscussionCard = ({ discussion, onUpdate }) => {
             {showComments && (
                 <div className="mt-6">
                     {/* Add Comment Form */}
-                    <form onSubmit={handleAddComment} className="flex gap-2 mb-4">
+                    <form onSubmit={handleAddComment} className="flex flex-wrap gap-2 mb-4">
                         <input
                             className="flex-1 p-2 border border-gray-700/50 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
                             placeholder="Add a comment..."

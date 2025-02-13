@@ -125,7 +125,7 @@ const Calendar = ({ problems, onDayClick }) => {
   });
 
   return (
-    <div className="bg-gray-900 p-6 rounded-xl w-96 shadow-xl">
+    <div className="bg-gray-900 p-6 rounded-xl w-80 sm:w-96 shadow-xl">
      
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-white font-medium text-lg">Problem Activity</h3>

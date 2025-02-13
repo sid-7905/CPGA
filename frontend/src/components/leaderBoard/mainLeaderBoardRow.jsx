@@ -53,7 +53,6 @@ const UserComparison = ({ user1, user2, onClose }) => (
                         )}
                     </div>
                     <p className="text-white font-semibold">{user1.name}</p>
-                    <p className="text-gray-400 text-sm">@{user1.username}</p>
                 </div>
                 <div className="text-center">
                     <div className="w-16 h-16 mx-auto rounded-full overflow-hidden shadow-lg mb-2">
@@ -64,7 +63,6 @@ const UserComparison = ({ user1, user2, onClose }) => (
                         )}
                     </div>
                     <p className="text-white font-semibold">{user2.name}</p>
-                    <p className="text-gray-400 text-sm">@{user2.username}</p>
                 </div>
 
                 {/* Platform Comparisons */}

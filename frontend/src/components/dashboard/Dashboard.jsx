@@ -375,7 +375,7 @@ export default function Dashboard() {
           </div>
 
           <motion.div
-            className="h-36 sm:h-56 border border-gray-700/50 bg-gradient-to-br from-gray-800 to-gray-900 
+            className="w-full sm:w-auto sm:h-56 border border-gray-700/50 bg-gradient-to-br from-gray-800 to-gray-900 
                        rounded-xl shadow-lg backdrop-blur-sm"
             style={{ aspectRatio: "3" }}
             whileHover={{ scale: 1.01 }}
@@ -386,13 +386,13 @@ export default function Dashboard() {
         </motion.div>
 
         <motion.div
-          className="w-11/12 rounded-lg flex flex-wrap items-center justify-center gap-20 md:gap-4 mt-20 md:mt-4"
+          className="w-11/12 rounded-lg flex flex-wrap items-center justify-center gap-4 mt-4"
           whileInView={{ opacity: 1, y: 0 }}
           initial={{ opacity: 0, y: 50 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <motion.div
-            className="h-48 sm:h-72 md:h-80 border border-gray-700/50 bg-gradient-to-br from-gray-800 to-gray-900 
+            className="w-full sm:w-auto sm:h-72 md:h-80 border border-cyan-700/50 bg-gradient-to-br from-gray-800 to-gray-900 
                        rounded-xl flex items-center justify-center shadow-lg backdrop-blur-sm"
             style={{ aspectRatio: "2" }}
             whileHover={{ scale: 1.01 }}
@@ -414,7 +414,7 @@ export default function Dashboard() {
             </AnimatePresence>
           </motion.div>
           <div className="flex flex-col gap-4 items-center justify-center">
-            <div className="w-full md:w-52 min-w-52 h-full text-xl bg-gradient-to-br from-gray-800 to-gray-900 text-white flex flex-col items-center justify-center gap-4 border border-gray-700/50 rounded-xl p-4 shadow-lg">
+            <div className="w-full md:w-52 min-w-52 h-full text-xl bg-gradient-to-br from-gray-800 to-gray-900 text-white flex flex-col items-center justify-center gap-4 border border-gray-700/50 rounded-xl p-4 shadow-lg hover:shadow-cyan-900/10 transition-all duration-300 backdrop-blur-sm">
               <span className="text-gray-400 font-medium">Total Contests</span>
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                 {totalContests}
@@ -422,7 +422,7 @@ export default function Dashboard() {
             </div>
 
             <div
-              className="h-48 md:h-52 border border-gray-700/50 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex flex-col gap-4 items-center text-white justify-center p-6 shadow-lg"
+              className="h-48 md:h-52 border border-gray-700/50 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex flex-col gap-4 items-center text-white justify-center p-6  shadow-lg hover:shadow-cyan-900/10 transition-all duration-300 backdrop-blur-sm"
               style={{ aspectRatio: "1" }}
             >
               <select
@@ -454,7 +454,7 @@ export default function Dashboard() {
 
         {/* Stats Pie Charts with animations */}
         <motion.div
-          className="w-7/12 flex flex-wrap items-center justify-center gap-4"
+          className="w-full sm:w-7/12 flex flex-wrap items-center justify-center gap-4"
           whileInView={{ opacity: 1, y: 0 }}
           initial={{ opacity: 0, y: 50 }}
           transition={{ duration: 0.5, delay: 0.4 }}
@@ -471,17 +471,17 @@ export default function Dashboard() {
               />
             </div>
 
-            <div className="border border-gray-700/50 w-64 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 p-6 flex flex-col justify-center items-center gap-4 shadow-lg">
+            <div className="border border-gray-700/50 w-full sm:w-64 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 p-6 flex flex-col justify-center items-center gap-4 shadow-lg overflow-hidden">
               <h1 className="text-lg font-semibold text-gray-200">Progress</h1>
               {platforms.map((platform) => (
                 <div
-                  className="flex items-center justify-between w-full space-x-3 bg-gradient-to-r from-blue-900 to-cyan-900 text-white p-3 border border-cyan-800/30 rounded-lg hover:shadow-lg transition-all duration-300"
                   key={platform.name}
+                  className="group flex items-center justify-between w-full sm:w-52 space-x-3 bg-gradient-to-r from-blue-900 to-cyan-900 text-white p-2 border border-cyan-800/30 rounded-lg hover:scale-110  transition-all duration-300"
                 >
                   <img
                     src={platform.faviconUrl}
                     alt={platform.name}
-                    className="w-6 h-6"
+                    className="w-6 h-6 group-hover:rotate-12 "
                   />
                   <div className="font-medium">
                     {ratingData[platform.name].current}

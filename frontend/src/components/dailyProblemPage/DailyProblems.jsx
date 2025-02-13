@@ -177,7 +177,7 @@ export default function DailyProblems() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col  bg-gradient-to-b from-gray-900 to-gray-800 w-full">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-900 to-gray-800 w-full">
       <HomeNavbar />
 
       <div className=" w-full h-full flex flex-col">
@@ -190,7 +190,7 @@ export default function DailyProblems() {
         </div>
 
         <div className="flex flex-wrap gap-4 w-full justify-evenly">
-          <div className="w-96 lg:w-1/3">
+          <div className="w-80 lg:w-1/3">
             <div className="lg:fixed">
               <Calendar problems={problems} onDayClick={scrollToProblem} />
               <FilterStats

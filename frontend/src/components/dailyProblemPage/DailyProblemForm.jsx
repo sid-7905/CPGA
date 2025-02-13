@@ -69,7 +69,7 @@ const DailyProblemForm = () => {
   };
 
   const handleRatingChange = (type, value) => {
-    const numValue = parseInt(value) || 0;
+    const numValue = parseInt(value);
     setRatingRange((prev) => ({
       ...prev,
       [type]: numValue,
@@ -89,6 +89,11 @@ const DailyProblemForm = () => {
     
     // Send the data to the backend
     const token = localStorage.getItem("token");
+
+    if (!ratingRange.min || !ratingRange.max) {
+      setRatingRange({ min: 800, max: 1200 });
+    }
+
     const data = {
       problemTags: selectedTags,
       ratingRange,
@@ -135,7 +140,7 @@ const DailyProblemForm = () => {
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-gray-900 to-gray-800 w-full">
       <HomeNavbar />
       <div className="w-full h-full flex flex-col items-center">
-        <div className="w-full max-w-2xl px-6 py-8">
+        <div className="w-full max-w-2xl py-4">
           <div className="backdrop-blur-sm bg-opacity-20 bg-gray-800 p-6 rounded-lg border border-gray-700">
             <h2 className="text-2xl font-bold mb-6 text-white">Daily Problem Preferences</h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
@@ -179,6 +184,8 @@ const DailyProblemForm = () => {
                 </button>
               </div>
 
+              <hr />
+
               {/* Rating Range Section */}
               <div>
                 <label className="block font-medium mb-2 text-gray-200">Rating Range</label>
@@ -213,6 +220,8 @@ const DailyProblemForm = () => {
                   </div>
                 )}
               </div>
+
+              <hr />
 
               {/* Selected Tags */}
               <div>

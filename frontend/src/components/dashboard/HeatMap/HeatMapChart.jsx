@@ -54,23 +54,23 @@ const DynamicHeatMap = ({ heatMapData }) => {
   };
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full p-0 sm:p-4">
       <div className="text-white flex flex-col items-center justify-center gap-4">
         <div className="flex items-center justify-between w-full">
-          <h3 className="text-xl font-semibold text-gray-200">Activity Heatmap</h3>
+          <h3 className="text-sm sm:text-xl font-semibold text-gray-200">Activity Heatmap</h3>
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrevious}
               className="text-gray-400 hover:text-gray-200"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-3 h-3 sm:w-5 sm:h-5" />
             </button>
             <button
               onClick={handleNext}
               className="text-gray-400 hover:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={timeOffset === 0}
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-3 h-3 sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>

@@ -64,10 +64,10 @@ const CodeChefRatingGraph = ({ ratingData }) => {
 
   return (
     <div className="w-full max-w-3xl rounded-lg shadow-sm">
-      <h2 className="text-xl text-center font-semibold text-cyan-600 mb-1">
+      <h2 className="text-sm sm:text-xl text-center font-semibold text-cyan-600 mb-1">
         CodeChef Rating Progress
       </h2>
-      <div className="h-72">
+      <div className="h-40 sm:h-72">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={formattedData}
@@ -75,17 +75,20 @@ const CodeChefRatingGraph = ({ ratingData }) => {
           >
             <CartesianGrid stroke="#000000" strokeDasharray="3 3" />
             <XAxis
+            className="text-xs sm:text-lg"
               dataKey="month"
-              tick={{ fill: "#4a5568" }}
+              tick={{ fill: "#4a5568"}} // Change font size here
               tickFormatter={(value) => value.split(" ")[0]}
             />
             <YAxis
+            className="text-xs sm:text-lg"
               domain={[Math.max(0, minRating - 100), maxRating + 100]}
-              tick={{ fill: "#4a5568" }}
+              tick={{ fill: "#4a5568"}} // Change font size here
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Line
+              className="text-xs sm:text-lg"
               type="monotone"
               dataKey="rating"
               stroke="#4299e1"
