@@ -5,112 +5,9 @@ import { Loader } from "../loader/loader";
 import { getMainLeaderBoardData } from "../Api";
 import { showErrorToast } from "../toastify";
 import HomeNavbar from "../HomeNavbar";
-import { NavLink } from "react-router-dom";
+import LeaderboardRow from "./mainLeaderBoardRow";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
-
-const getProfileLink = (platformId, platform) => {
-  if (!platformId) return "#";
-  const platformUrls = {
-    CodeChef: `https://www.codechef.com/users/${platformId}`,
-    LeetCode: `https://leetcode.com/${platformId}`,
-    CodeForces: `https://codeforces.com/profile/${platformId}`,
-  };
-
-  return platformUrls?.[platform] || "#";
-};
-
-const getMedalIcon = (position) => {
-  switch (position) {
-    case 0:
-      return <Trophy className="w-6 h-6 text-yellow-400" />;
-    case 1:
-      return <Medal className="w-6 h-6 text-gray-300" />;
-    case 2:
-      return <Award className="w-6 h-6 text-amber-600" />;
-    default:
-      return (
-        <span className="text-xl font-bold text-gray-400">{position + 1}</span>
-      );
-  }
-};
-
-// Reusable Leaderboard Row Component
-const LeaderboardRow = ({ user, rank }) => (
-  <div
-    key={user._id}
-    className={`group flex flex-wrap md:flex-nowrap items-center w-full lg:w-4/5 rounded-xl p-4 
-            ${
-              rank < 3
-                ? "bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border border-gray-700"
-                : "bg-gray-900/60 hover:bg-gray-800/80"
-            } 
-            transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-cyan-500/10`}
-  >
-    <div className="flex items-center gap-6 w-full sm:w-1/3 px-4">
-      <div className="flex items-center justify-center w-8">
-        {getMedalIcon(rank)}
-      </div>
-      <div className="w-10 h-10 rounded-full overflow-hidden shadow-lg">
-        {user?.image ? (
-          <img
-            src={user.image}
-            alt="Profile"
-            className="h-full w-full rounded-full object-cover"
-          />
-        ) : (
-          <User className="h-full w-full p-1 text-gray-400 object-cover" />
-        )}
-      </div>
-      <NavLink to={`/profile/${user._id}`}>
-        <p className="text-white font-semibold hover:text-blue-500">
-          {user.name}
-        </p>
-        <p className="text-gray-400 text-sm hover:text-blue-500">
-          @{user.username}
-        </p>
-      </NavLink>
-    </div>
-
-    <div className="flex items-center justify-evenly w-full sm:w-1/3 py-4 sm:py-0">
-      {[
-        { key: "codeChefRating", platformID: "codeChefID", label: "CodeChef" },
-        { key: "leetCodeRating", platformID: "leetCodeID", label: "LeetCode" },
-        {
-          key: "codeForcesRating",
-          platformID: "codeForcesID",
-          label: "CodeForces",
-        },
-      ].map((platform) => (
-        <div key={platform.key} className="text-center">
-          <NavLink
-            to={getProfileLink(user[platform.platformID], platform.label)}
-            target="_blank"
-            className={`font-semibold ${
-              user[platform.key] === 0
-                ? "text-gray-500"
-                : "text-white hover:text-blue-500 "
-            }`}
-          >
-            {user[platform.key] || "N/A"}
-          </NavLink>
-          <p className="text-gray-400 text-xs">{platform.label}</p>
-        </div>
-      ))}
-    </div>
-
-    <div className="w-full sm:w-1/3 flex justify-center">
-      <NavLink to={`/profile/${user._id}`} className="w-full sm:w-auto">
-        <button
-          className="w-full px-6 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg
-                                         transition-colors duration-300 flex items-center justify-center gap-2"
-        >
-          View Profile
-        </button>
-      </NavLink>
-    </div>
-  </div>
-);
 
 const MainLeaderBoard = () => {
   const [users, setUsers] = useState([]);
@@ -121,18 +18,23 @@ const MainLeaderBoard = () => {
   const usersPerPage = 5;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [userData, setUserData] = useState([]);
+  const userId = JSON.parse(localStorage.getItem("user")).id;
 
   const fetchUsers = useCallback(async () => {
     const fetchTime = localStorage.getItem("fetchTime");
-    const leaderboardData = localStorage.getItem("leaderboardData");
+    const leaderboardData = JSON.parse(localStorage.getItem("leaderboardData"));
 
     if (fetchTime && leaderboardData) {
       const today = new Date().toISOString().split("T")[0];
       const lastFetchDate = new Date(fetchTime).toISOString().split("T")[0];
 
       if (today === lastFetchDate) {
-        setUsers(JSON.parse(leaderboardData));
-        console.log(JSON.parse(leaderboardData));
+        setUsers(leaderboardData);
+        const currentUser = leaderboardData.find(user => user._id === userId);
+        if (currentUser) {
+          setUserData(currentUser);
+        }
         return;
       }
     }
@@ -140,7 +42,6 @@ const MainLeaderBoard = () => {
     try {
       setLoading(true);
       setError(null);
-
       const response = await axios.get(`${backendUrl}/api/getAllUsers`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -150,6 +51,11 @@ const MainLeaderBoard = () => {
 
       const leaderboardData = await getMainLeaderBoardData(response.data);
       setUsers(leaderboardData);
+
+      const currentUser = leaderboardData.find(user => user._id === userId);
+      if (currentUser) {
+        setUserData(currentUser);
+      }
       localStorage.setItem("leaderboardData", JSON.stringify(leaderboardData));
       localStorage.setItem("fetchTime", new Date().toISOString());
     } catch (err) {
@@ -215,7 +121,7 @@ const MainLeaderBoard = () => {
         <Loader />
         </div>
       ) : (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-11/12 mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-white mb-4">Leaderboard</h1>
             <p className="text-gray-400">Top performers in daily challenges</p>
@@ -261,6 +167,7 @@ const MainLeaderBoard = () => {
                 key={user._id}
                 user={user}
                 rank={(currentPage - 1) * usersPerPage + index}
+                userData={userData}
               />
             ))}
           </div>
