@@ -434,11 +434,12 @@ export default function Dashboard() {
                 <option value="LeetCode">LeetCode</option>
               </select>
 
-              <div className="text-gray-300">
+              
+              <div className="text-center flex flex-col gap-2 items-start">
+                <div className="text-gray-300">
                 Contests: {contestCount[platform]}
               </div>
 
-              <div className="text-center">
                 <div className="text-gray-300 mb-2">
                   Rating: {ratingData[platform].current}
                   <span className="text-gray-400 text-sm ml-2">
@@ -449,17 +450,14 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          {/* ... [Rest of the component remains similar but wrapped in motion components] */}
         </motion.div>
 
-        {/* Stats Pie Charts with animations */}
         <motion.div
           className="w-full sm:w-7/12 flex flex-wrap items-center justify-center gap-4"
           whileInView={{ opacity: 1, y: 0 }}
           initial={{ opacity: 0, y: 50 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          {/* ... [Pie charts wrapped in motion.div] */}
             <div className="border border-gray-700/50 w-64 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
               <CPStatsPieChart Count={solvedCount} Title={"Problems Solved"} />
             </div>
@@ -476,24 +474,26 @@ export default function Dashboard() {
               {platforms.map((platform) => (
                 <div
                   key={platform.name}
-                  className="group flex items-center justify-between w-full sm:w-52 space-x-3 bg-gradient-to-r from-blue-900 to-cyan-900 text-white p-2 border border-cyan-800/30 rounded-lg hover:scale-110  transition-all duration-300"
+                  className="group flex items-center justify-between w-full sm:w-52 gap-2 space-x-3 bg-gradient-to-r from-blue-900 to-cyan-900 text-white p-2 border border-cyan-800/30 rounded-lg hover:scale-110  transition-all duration-300"
                 >
+                  <div className="w-1/3">
                   <img
                     src={platform.faviconUrl}
                     alt={platform.name}
                     className="w-6 h-6 group-hover:rotate-12 "
-                  />
-                  <div className="font-medium">
+                    />
+                    </div>
+                  <div className="w-1/3 font-medium">
                     {ratingData[platform.name].current}
                   </div>
-                  <div className="text-gray-200">{rankData[platform.name]}</div>
+                  <div className="w-1/3 text-gray-200">{rankData[platform.name]}</div>
                 </div>
               ))}
           </div>
         </motion.div>
 
         <motion.div
-          className="border border-gray-700/50 rounded-xl bg-gradient-to-br from-gray-900 to-gray-950 shadow-lg"
+          className="border w-full sm:w-7/12 border-gray-700/50 rounded-xl bg-gradient-to-br flex items-center justify-center from-gray-900 to-gray-950 shadow-lg"
           whileInView={{ opacity: 1, y: 0 }}
           initial={{ opacity: 0, y: 50 }}
           transition={{ duration: 0.5, delay: 0.6 }}

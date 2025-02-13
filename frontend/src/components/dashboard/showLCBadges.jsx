@@ -24,11 +24,11 @@ const ShowLCBadges = ({ badges }) => {
     return icon.startsWith("https://") ? icon : baseUrl + icon;
 }
 return (
-    <div className="w-full max-w-3xl rounded-lg shadow-sm p-4">
+    <div className="w-full max-w-3xl flex flex-col items-center justify-center rounded-lg shadow-sm p-4">
         <h2 className="text-xl text-center font-semibold text-cyan-600 mb-4">
             LeetCode Badges
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="flex flex-wrap items-center justify-center ">
             {badges.map((badge) => {
                 const iconName = badge.icon.split('/').pop();
                 return (

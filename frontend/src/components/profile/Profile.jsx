@@ -89,7 +89,7 @@ const Profile = () => {
       <Navbar />
 
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto space-y-8 opacity-0 animate-fadeIn">
+        <div className="w-full max-w-6xl mx-auto space-y-8 opacity-0 animate-fadeIn">
           {/* Profile Header */}
           <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg shadow-xl p-8 transform hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-500">
             <div className="flex flex-col md:flex-row items-center gap-8">
@@ -128,7 +128,7 @@ const Profile = () => {
           {/* Stats and Platforms Grid */}
           <div className="grid md:grid-cols-2 gap-8">
             {/* Platform IDs Card */}
-            <div className="bg-gray-800/50 rounded-lg shadow-xl p-8 transform hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-500">
+            <div className="bg-gray-800/50 w-full rounded-lg shadow-xl p-8 transform hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-500">
               <div className="mb-6">
                 <h3 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-200 flex items-center gap-3">
                   <i className="fas fa-code text-cyan-400"></i>
@@ -141,7 +141,7 @@ const Profile = () => {
                     platform.platformId && (
                       <div
                         key={platform.name}
-                        className="group flex items-center justify-between p-4 bg-gray-900/50 rounded-lg hover:bg-cyan-900/20 transition-all duration-300 transform hover:scale-102 hover:shadow-lg"
+                        className="group flex flex-col flex-wrap sm:flex-row items-center justify-center sm:justify-between p-4 bg-gray-900/50 rounded-lg hover:bg-cyan-900/20 transition-all duration-300 transform hover:scale-102 hover:shadow-lg"
                       >
                         <div className="flex flex-col sm:flex-row items-center gap-4">
                           <img
@@ -174,7 +174,7 @@ const Profile = () => {
                 </h3>
               </div>
               {totalDailyProblemsSolved !== undefined && totalPoints !== undefined ? (
-                <div className="grid grid-cols-2 gap-6">
+                <div className="flex flex-col sm:flex-row gap-2 justify-evenly">
                   <StatCard
                     value={totalDailyProblemsSolved}
                     label="Daily Problems Solved"
