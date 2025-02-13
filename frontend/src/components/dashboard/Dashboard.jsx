@@ -247,7 +247,7 @@ export default function Dashboard() {
       <div className="h-screen flex flex-col items-center justify-center gap-4">
         <Loader />
         <div className="text-lg text-white">
-          Loading data, this may take few seconds, please wait...
+          Loading data...
         </div>
       </div>
     );
