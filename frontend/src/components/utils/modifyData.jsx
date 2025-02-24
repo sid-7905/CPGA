@@ -2,7 +2,9 @@ export function CombineHeatMapData(codeChefData, codeForcesData, leetCodeData) {
     const combinedMap = {};
 
     [...codeChefData, ...codeForcesData, ...leetCodeData].forEach((entry) => {
-        const date = entry.date;
+        // Normalize the date to 'YYYY-MM-DD' format
+        const date = new Date(entry.date).toISOString().split("T")[0];
+
         if (combinedMap[date]) {
             combinedMap[date] += entry.value;
         } else {
@@ -12,6 +14,7 @@ export function CombineHeatMapData(codeChefData, codeForcesData, leetCodeData) {
 
     return Object.entries(combinedMap).map(([date, value]) => ({ date, value }));
 }
+
 
 
 export function ConvertCFData(result) {
