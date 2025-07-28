@@ -139,7 +139,6 @@ export async function updateProblemStatus({contestId, index, points}) {
   }
 }
 
-
 export async function getMainLeaderBoardData(userData) {
   try {
     const users = await Promise.all(
@@ -180,4 +179,3 @@ export async function getMainLeaderBoardData(userData) {
     throw err; // Re-throw the error to be handled by the caller
   }
 }
-

@@ -9,7 +9,6 @@ router.use(authenticate);
 router.put('/update-password', updatePassword);
 router.post('/update-email', updateEmail);
 
-
 var uploader = multer({
     storage: multer.diskStorage({})
 })

@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import HeatMapChart from "./HeatMap/HeatMapChart.jsx";
-import CCRatingGraph from "./RatingGraphs/CCRatingGraph.jsx";
-import CFRatingGraph from "./RatingGraphs/CFRatingGraph.jsx";
-import LCRatingGraph from "./RatingGraphs/LCRatingGraph.jsx";
-import CPStatsPieChart from "./PieChart.jsx";
-import ShowLCBadges from "./showLCBadges.jsx";
+import { Suspense } from "react";
 import { Loader } from "../loader/loader.jsx";
 import useFetchWithLocalStorage from "../FetchWithLocalStorage.jsx";
 import { ToastContainer, toast } from "react-toastify";
@@ -23,6 +18,15 @@ import {
   showInfoToast,
   showLoaderToast,
 } from "../toastify.jsx";
+
+// Lazy load chart components
+const HeatMapChart = React.lazy(() => import("./HeatMap/HeatMapChart.jsx"));
+const CCRatingGraph = React.lazy(() => import("./RatingGraphs/CCRatingGraph.jsx"));
+const CFRatingGraph = React.lazy(() => import("./RatingGraphs/CFRatingGraph.jsx"));
+const LCRatingGraph = React.lazy(() => import("./RatingGraphs/LCRatingGraph.jsx"));
+const CPStatsPieChart = React.lazy(() => import("./PieChart.jsx"));
+const ShowLCBadges = React.lazy(() => import("./showLCBadges.jsx"));
+
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -202,10 +206,10 @@ export default function Dashboard() {
       .then((results) => {
         const result = results[results.length - 1];
         if (result >= 0) {
-          toast.dismiss(); // Dismiss the info toast
+          toast.dismiss(); 
           showSuccessToast("Data Refreshed Successfully");
         } else {
-          toast.dismiss(); // Dismiss the info toast
+          toast.dismiss(); 
           showInfoToast(
             `Timeout!! Try again after ${Math.ceil(Math.abs(result))} minutes`
           );
@@ -217,41 +221,10 @@ export default function Dashboard() {
   }
 
   // For changing platform on display
-  const [platform, setPlatform] = useState("CodeChef");
+  const [platform, setPlatform] = useState("CodeForces");
   const handleChange = (e) => {
     setPlatform(e.target.value);
   };
-
-  const allDataFetched =
-    CCData &&
-    CFData &&
-    CFData2 &&
-    LCData &&
-    CFUserInfo &&
-    LCContestData &&
-    CCProblemsSolved &&
-    userHandle;
-
-  const [timeoutReached, setTimeoutReached] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setTimeoutReached(true);
-    }, 15000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!allDataFetched && !timeoutReached) {
-    return (
-      <div className="h-screen flex flex-col items-center justify-center gap-4">
-        <Loader />
-        <div className="text-lg text-white">
-          Loading data...
-        </div>
-      </div>
-    );
-  }
 
   let CFConvertedData = ConvertCFData(CFData2 ? CFData2.result : []); // For converting CFData2 to required format
   let LCConvertedData = ConvertLCData(
@@ -381,7 +354,9 @@ export default function Dashboard() {
             whileHover={{ scale: 1.01 }}
             transition={{ duration: 0.3 }}
           >
-            <HeatMapChart heatMapData={combinedheatMapData} />
+            <Suspense fallback={<Loader />}>
+              <HeatMapChart heatMapData={combinedheatMapData} />
+            </Suspense>
           </motion.div>
         </motion.div>
 
@@ -397,21 +372,16 @@ export default function Dashboard() {
             style={{ aspectRatio: "2" }}
             whileHover={{ scale: 1.01 }}
           >
-            <AnimatePresence mode="wait">
-              {platform === "CodeChef" && (
-                <CCRatingGraph ratingData={CCData?.ratingData} />
-              )}
-              {platform === "CodeForces" && (
-                <CFRatingGraph ratingData={CFData?.result} />
-              )}
-              {platform === "LeetCode" && (
-                <LCRatingGraph
-                  userContestRankingHistory={
-                    LCContestData?.userContestRankingHistory
-                  }
-                />
-              )}
-            </AnimatePresence>
+            <Suspense fallback={<Loader />}>
+              <AnimatePresence mode="wait">
+                {platform === "CodeChef" && <CCRatingGraph ratingData={CCData?.ratingData} />}
+                {platform === "CodeForces" && <CFRatingGraph ratingData={CFData?.result} />}
+                {platform === "LeetCode" && (
+                  <LCRatingGraph userContestRankingHistory={LCContestData?.userContestRankingHistory} />
+                )}
+              </AnimatePresence>
+            </Suspense>
+
           </motion.div>
           <div className="flex flex-col gap-4 items-center justify-center">
             <div className="w-full md:w-52 min-w-52 h-full text-xl bg-gradient-to-br from-gray-800 to-gray-900 text-white flex flex-col items-center justify-center gap-4 border border-gray-700/50 rounded-xl p-4 shadow-lg hover:shadow-cyan-900/10 transition-all duration-300 backdrop-blur-sm">
@@ -429,9 +399,9 @@ export default function Dashboard() {
                 className="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
                 onChange={handleChange}
               >
-                <option value="CodeChef">CodeChef</option>
                 <option value="CodeForces">CodeForces</option>
                 <option value="LeetCode">LeetCode</option>
+                <option value="CodeChef">CodeChef</option>
               </select>
 
               
@@ -459,7 +429,9 @@ export default function Dashboard() {
           transition={{ duration: 0.5, delay: 0.4 }}
         >
             <div className="border border-gray-700/50 w-64 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
-              <CPStatsPieChart Count={solvedCount} Title={"Problems Solved"} />
+                <Suspense fallback={<Loader />}>
+                  <CPStatsPieChart Count={solvedCount} Title={"Problems Solved"} />
+                </Suspense>
             </div>
 
             <div className="border border-gray-700/50 w-64 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
@@ -498,7 +470,9 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 50 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <ShowLCBadges badges={LCData?.data?.matchedUser?.badges} />
+          <Suspense fallback={<Loader />}>
+            <ShowLCBadges badges={LCData?.data?.matchedUser?.badges} />
+          </Suspense>
         </motion.div>
       </motion.div>
     </motion.div>

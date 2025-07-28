@@ -16,6 +16,8 @@ import {showSuccessToast, showErrorToast, showLoaderToast} from '../toastify';
 import { toast } from "react-toastify";
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
+// --- LeaderboardRow and Pagination components remain unchanged ---
+
 const LeaderboardRow = ({ user, index, backendUrl }) => {
   const getMedalIcon = (position) => {
     switch (position) {
@@ -90,7 +92,7 @@ const LeaderboardRow = ({ user, index, backendUrl }) => {
         <NavLink to={`/profile/${user._id}`} className="w-full sm:w-auto">
           <button
             className="w-full px-6 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg
-                             transition-colors duration-300 flex items-center justify-center gap-2"
+                                     transition-colors duration-300 flex items-center justify-center gap-2"
           >
             View Profile
           </button>
@@ -126,15 +128,33 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   );
 };
 
+// --- Main Leaderboard Component ---
 export default function Leaderboard() {
   const [users, setUsers] = useState(null);
   const [filteredUsers, setFilteredUsers] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
+  const CACHE_KEY = "leaderboardData"; // Key for localStorage
 
   useEffect(() => {
-    showLoaderToast("Fetching leaderboard data...");
+    // 1. Try to load data from localStorage for immediate display
+    try {
+      const cachedData = localStorage.getItem(CACHE_KEY);
+      if (cachedData) {
+        const parsedData = JSON.parse(cachedData);
+        setUsers(parsedData);
+        setFilteredUsers(parsedData);
+      }
+    } catch (error) {
+      console.error("Failed to parse cached leaderboard data:", error);
+      localStorage.removeItem(CACHE_KEY); // Clear corrupted data
+    }
+    
+    // ✅ 2. Show a loading toast for every background fetch attempt
+    const toastId = showLoaderToast("Refreshing data...");
+
+    // 3. Fetch fresh data from the backend
     axios
       .get(`${backendUrl}/api/getAllUsers`, {
         headers: {
@@ -143,27 +163,35 @@ export default function Leaderboard() {
         withCredentials: true,
       })
       .then((response) => {
-        toast.dismiss();
         const sortedUsers = response.data.sort(
           (a, b) => b.dailyPoints - a.dailyPoints
         );
+
         setUsers(sortedUsers);
         setFilteredUsers(sortedUsers);
-        showSuccessToast("Data fetched successfully!");
+        localStorage.setItem(CACHE_KEY, JSON.stringify(sortedUsers));
+        
+        toast.dismiss();
+        // ✅ Update toast to success message
+        showSuccessToast("Leaderboard is upto date!")
       })
       .catch((error) => {
-        showErrorToast("Failed to fetch leaderboard data!");
         console.error("Error fetching leaderboard data from backend:", error);
+        
+        toast.dismiss();
+        // ✅ Update toast to error message
+        showErrorToast("Failed to refresh leaderboard data!");
       });
-  }, []);
+  }, []); // This effect runs only once on mount
 
+  // This effect handles filtering when the search query changes
   useEffect(() => {
     if (users) {
       const filtered = users.filter((user) =>
         user.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredUsers(filtered);
-      setCurrentPage(1); // Reset to first page when search changes
+      setCurrentPage(1);
     }
   }, [searchQuery, users]);
 
@@ -200,8 +228,8 @@ export default function Leaderboard() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg
-                       text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400
-                       transition-colors"
+                               text-white placeholder-gray-400 focus:outline-none focus:border-cyan-400
+                               transition-colors"
             />
           </div>
         </div>

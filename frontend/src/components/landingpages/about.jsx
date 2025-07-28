@@ -1,9 +1,7 @@
 import React, {useState } from "react";
 import { motion } from "framer-motion";
 import videoSrc from "../../assets/WebsiteVideo.mp4";
-import placeholder from "../../assets/placeholder.png";
 import DashboardPage from "../../assets/DashboardPage.png";
-import ChatbotPage from "../../assets/ChatbotPage.png";
 import DiscussionPage from "../../assets/DiscussionPage.png";
 import DailyProblemPage from "../../assets/DailyProblemPage.png";
 import LeaderboardPage from "../../assets/LeaderboardPage.png";
@@ -98,11 +96,11 @@ const About = () => {
       image: DashboardPage,
       description: "Access an interactive dashboard that provides an overview of your progress, problem-solving stats, and personalized recommendations."
     },
-    {
-      name: "Chatbot",
-      image: ChatbotPage,
-      description: "Engage with an AI-powered chatbot to receive instant guidance on problem-solving, algorithms, and coding doubts."
-    },
+    // {
+    //   name: "Chatbot",
+    //   image: ChatbotPage,
+    //   description: "Engage with an AI-powered chatbot to receive instant guidance on problem-solving, algorithms, and coding doubts."
+    // },
     {
       name : "Discussion Forum",
       image: DiscussionPage,

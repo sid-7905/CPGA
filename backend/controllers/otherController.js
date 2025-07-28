@@ -31,6 +31,22 @@ const getProfile = async (req, res) => {
   });
 };
 
+// const getAllUsers = async (req, res) => {
+//   const page = parseInt(req.query.page) || 1;
+//   const limit = parseInt(req.query.limit) || 5;
+
+//   const skip = (page - 1) * limit;
+
+//   try {
+//     const users = await UserModel.find().skip(skip).limit(limit);
+//     const totalCount = await UserModel.countDocuments();
+
+//     res.json({ users, totalCount });
+//   } catch (err) {
+//     res.status(500).json({ message: "Error fetching users" });
+//   }
+// };
+
 const getAllUsers = async (req, res) => {
   const users = await UserModel.find();
   res.json(users);
