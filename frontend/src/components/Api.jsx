@@ -158,8 +158,8 @@ export async function getMainLeaderBoardData(userData) {
             codeForcesRating: Math.floor(CFData?.result?.[CFData?.result?.length - 1]?.newRating || 0),
             image: user.image,
             totalRating:
-              Math.floor(CCData?.currentRating || 0) +
-              Math.floor(LCContestData?.userContestRanking?.rating || 0) +
+              (Math.floor(CCData?.currentRating || 0))*0.75 +
+              (Math.floor(LCContestData?.userContestRanking?.rating || 0))*0.7 +
               Math.floor(CFData?.result?.[CFData?.result?.length - 1]?.newRating || 0),
             _id: user._id,
             codeForcesID : user.platformIds?.[0]?.["Codeforces"],
